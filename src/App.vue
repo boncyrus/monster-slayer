@@ -1,19 +1,31 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="container">
+    <page-loading :isLoading="isLoading"></page-loading>
+    <component :is="layout" class="content-container">
+      <router-view class="h-100" />
+    </component>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import "./assets/fonts/monster-slayer.css";
+import PageLoading from "./components/PageLoading.vue";
+import { mapState } from "vuex";
 
 export default {
-  name: 'App',
+  computed: {
+    ...mapState({
+      isLoading: (state) => state.app.isLoading,
+    }),
+    layout() {
+      return this.$route.meta.layout || "default-layout";
+    },
+  },
   components: {
-    HelloWorld
-  }
-}
+    PageLoading,
+  },
+  name: "App",
+};
 </script>
 
 <style>
@@ -21,8 +33,35 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: black;
+  background: url("/images/game-battle-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 10px;
+}
+
+.center-block {
+  display: block;
+  margin: 0 auto;
+}
+</style>
+
+<style scoped>
+.character-container {
+  flex: 1;
+}
+
+.account-create-form-container {
+  min-width: 340px;
+  width: 50%;
+  align-self: center;
+}
+
+.content-container {
+  min-height: 620px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>
