@@ -6,6 +6,7 @@ import VueRouter from 'vue-router';
 import LoginPage from './components/LoginPage.vue';
 import SignupPage from './components/SignupPage.vue';
 import BattleField from './components/BattleField.vue';
+import DungeonsPage from './components/DungeonsPage.vue';
 import CharacterInfoPage from './components/CharacterInfoPage.vue';
 import InventoryPage from './components/InventoryPage.vue';
 import VueResource from 'vue-resource';
@@ -29,29 +30,46 @@ Vue.filter('uppercase', uppercase)
 const routes = [
   {
     ...routeConfig.signup,
-    component: SignupPage
+    component: SignupPage,
+    meta: {
+      music: 'menu'
+    }
   },
   {
     ...routeConfig.login,
-    component: LoginPage
+    component: LoginPage,
+    meta: {
+      music: 'menu'
+    }
   },
   {
     ...routeConfig.character.index,
     component: CharacterInfoPage,
     meta: {
-      layout: 'main-layout'
+      layout: 'main-layout',
+      music: 'inventory'
     }
   },
   {
     ...routeConfig.character.inventory,
     component: InventoryPage,
     meta: {
-      layout: 'main-layout'
+      layout: 'main-layout',
+      music: 'inventory'
     }
   },
   {
-    ...routeConfig.battleField,
-    component: BattleField
+    ...routeConfig.dungeons.index,
+    component: DungeonsPage,
+    meta: {
+      layout: 'main-layout',
+      music: 'inventory'
+    }
+  },
+  {
+    ...routeConfig.dungeons.battle,
+    component: BattleField,
+    music: 'battle'
   },
   {
     path: '/',

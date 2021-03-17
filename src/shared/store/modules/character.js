@@ -22,7 +22,6 @@ const getters = {
 const actions = {
     async fetchCharacter({ commit, state }, { accountId, invalidate }) {
         commit('setLoading', true);
-        console.log(state);
         if (invalidate === true || state.current._id.length === 0) {
             const response = await Vue.http.get(routes.getCharacter(accountId).url);
             localStorage.setItem(LocalStorageKeys.characterId, response.body._id);

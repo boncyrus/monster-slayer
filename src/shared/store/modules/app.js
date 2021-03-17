@@ -1,10 +1,29 @@
 const state = () => ({
-    isLoading: false
+    isLoading: false,
+    loadingText: '',
+    currentSong: ''
 });
 
 const mutations = {
     setLoading(state, payload) {
-        state.isLoading = payload;
+        if (typeof payload === 'boolean') {
+            state.isLoading = payload;
+            state.loadingText = '';
+        }
+
+        if (typeof payload === 'object') {
+            console.log('isObject');
+            state.isLoading = payload.isLoading;
+            state.loadingText = payload.loadingText
+        }
+    },
+    setSong(state, payload) {
+        if (!payload) {
+            state.currentSong = ''
+            return;
+        }
+
+        state.currentSong = `music/${payload}-music.mp3`;
     }
 }
 

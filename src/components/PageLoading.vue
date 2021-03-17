@@ -1,14 +1,19 @@
 <template>
   <div class="root" v-if="isLoading">
-    <div class="lds-roller">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+    <div>
+      <div class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="w-100 text-white font-weight-bold" v-if="loadingText">
+        {{ loadingText }}
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +25,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    loadingText: String,
   },
 };
 </script>
@@ -36,6 +42,8 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 999;
+  justify-content: center;
+  align-items: center;
 }
 
 .lds-roller {

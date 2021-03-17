@@ -7,10 +7,6 @@ export const routeConfig = {
         path: '/accounts/create',
         name: 'signup',
     },
-    battleField: {
-        path: '/battle-field',
-        name: 'battle-field',
-    },
     character: {
         index: {
             path: '/character',
@@ -19,6 +15,16 @@ export const routeConfig = {
         inventory: {
             path: '/character/inventory',
             name: 'inventory'
+        }
+    },
+    dungeons: {
+        index: {
+            path: '/dungeons',
+            name: 'dungeons'
+        },
+        battle: {
+            path: '/dungeons/:id',
+            name: 'dungeon-battle'
         }
     }
 }

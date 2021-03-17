@@ -1,17 +1,6 @@
 <template>
   <div>
     <login-form @onLogin="handleLogin"></login-form>
-    <div style="display: none">
-      <audio
-        src="music/menu-music.mp3"
-        id="menu-audio"
-        loop
-        autoplay
-        type="audio/mpeg"
-      >
-        Audio not supported
-      </audio>
-    </div>
   </div>
 </template>
 
@@ -29,7 +18,10 @@ export default {
   methods: {
     ...mapMutations("app", ["setLoading"]),
     handleLogin: async function(form) {
-      this.setLoading(true);
+      this.setLoading({
+        isLoading: true,
+        loadingText: "Logging in",
+      });
       const response = await this.login(form);
       this.setLoading(false);
       if (response.ok === true) {

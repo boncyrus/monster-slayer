@@ -2,7 +2,7 @@ import { routeConfig } from '../../models/routeConfig';
 
 export function loggedInGuard(to, from, next) {
     const isAuthenticated = !!localStorage.getItem('accountId');
-    if (to.name === routeConfig.login.name || to.name === routeConfig.signup) {
+    if (to.name === routeConfig.login.name || to.name === routeConfig.signup.name) {
         next()
     } else {
         if (isAuthenticated === true) {

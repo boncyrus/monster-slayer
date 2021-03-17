@@ -1,25 +1,39 @@
 <template>
   <div id="app" class="container">
-    <page-loading :isLoading="isLoading"></page-loading>
+    <page-loading
+      :isLoading="isLoading"
+      :loadingText="loadingText"
+    ></page-loading>
     <component :is="layout" class="content-container">
       <router-view class="h-100" />
     </component>
+    <div style="display: none">
+      <audio :src="currentSong" id="audio" loop autoplay type="audio/mpeg">
+        Audio not supported
+      </audio>
+    </div>
   </div>
 </template>
 
 <script>
 import "./assets/fonts/monster-slayer.css";
 import PageLoading from "./components/PageLoading.vue";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   computed: {
     ...mapState({
       isLoading: (state) => state.app.isLoading,
+      loadingText: (state) => state.app.loadingText,
+      currentSong: (state) => state.app.currentSong,
     }),
     layout() {
+      this.setSong(this.$route.meta.music);
       return this.$route.meta.layout || "default-layout";
     },
+  },
+  methods: {
+    ...mapMutations("app", ["setSong"]),
   },
   components: {
     PageLoading,
