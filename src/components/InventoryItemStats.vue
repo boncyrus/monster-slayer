@@ -7,9 +7,6 @@
         <icon-text :iconClass="getDefaultEquipmentIcon(info.item.type)">{{
           info.item.name | uppercase
         }}</icon-text>
-        <!-- <span class="text-white font-weight-bold">{{
-          info.item.name | uppercase
-        }}</span> -->
       </div>
 
       <div class="col-8">

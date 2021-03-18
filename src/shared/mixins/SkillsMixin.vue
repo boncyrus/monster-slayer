@@ -7,9 +7,9 @@ export default {
     getSkillIcon: function(skillType) {
       switch (skillType) {
         case SkillTypes.magical.code:
-          return `icon-${SkillTypes.magical.description}`;
+          return `icon-${SkillTypes.magical.description.toLowerCase()}`;
         case SkillTypes.physical.code:
-          return `icon-${SkillTypes.physical.description}`;
+          return `icon-${SkillTypes.physical.description.toLowerCase()}`;
         default:
           return "";
       }

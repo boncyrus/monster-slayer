@@ -1,10 +1,16 @@
 export const SkillTypes = Object.freeze({
     magical: {
         code: 'M',
-        description: 'magical',
+        description: 'Magical',
     },
     physical: {
         code: 'P',
-        description: 'physical'
+        description: 'Physical'
+    },
+    P() {
+        return this.physical;
+    },
+    M() {
+        return this.magical
     }
 })

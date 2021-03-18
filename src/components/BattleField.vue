@@ -158,7 +158,7 @@ export default {
     onActionExecute: function(action) {
       this.battleLogs = [];
 
-      if (action.target === TargetTypes.enemy) {
+      if (action.target === TargetTypes.enemy.code) {
         this.enemy.stats.health -= Math.abs(action.value);
       } else {
         this.player.stats.mana += Math.abs(action.value);
@@ -173,7 +173,7 @@ export default {
     onSkillExecute: function(skill) {
       this.battleLogs = [];
 
-      if (skill.target === TargetTypes.enemy) {
+      if (skill.target === TargetTypes.enemy.code) {
         this.enemy.stats.health -= Math.abs(skill.damage);
       } else {
         if (skill.damage < 0) {
@@ -191,7 +191,7 @@ export default {
       return true;
     },
     onEnemyActionExecute: function(action) {
-      if (action.target === TargetTypes.enemy) {
+      if (action.target === TargetTypes.enemy.code) {
         this.player.stats.health -= Math.abs(action.value);
       } else {
         this.enemy.stats.mana += Math.abs(action.value);
@@ -203,7 +203,7 @@ export default {
       return skill.cost <= this.enemy.stats.mana;
     },
     onEnemySkillExecute: function(skill) {
-      if (skill.target === TargetTypes.enemy) {
+      if (skill.target === TargetTypes.enemy.code) {
         this.player.stats.health -= Math.abs(skill.damage);
       } else {
         if (skill.damge < 0) {
@@ -215,11 +215,11 @@ export default {
       this.addBattleLog(this.createSkillLog(this.enemy.name, skill));
     },
     createActionLog: function(name, action) {
-      if (action.target === TargetTypes.enemy) {
+      if (action.target === TargetTypes.enemy.code) {
         return new BattleLog(
           `${name} performed ${action.name}! Dealt ${action.value} damage!`
         );
-      } else if (action.target === TargetTypes.self) {
+      } else if (action.target === TargetTypes.self.code) {
         if (action.name === "Focus") {
           return new BattleLog(
             `${name} performed ${action.name}! ${action.value} mp restored!`
@@ -229,7 +229,7 @@ export default {
     },
     createSkillLog: function(name, skill) {
       const damage = Math.abs(skill.damage);
-      if (skill.target === TargetTypes.enemy) {
+      if (skill.target === TargetTypes.enemy.code) {
         return new BattleLog(
           `${name} used ${skill.name}! Dealt ${damage} damage!`
         );
@@ -289,24 +289,24 @@ export default {
           new CharacterAction({
             name: "Attack",
             value: 10,
-            target: TargetTypes.enemy,
+            target: TargetTypes.enemy.code,
           }),
           new CharacterAction({
             name: "Focus",
             value: 20,
-            target: TargetTypes.self,
+            target: TargetTypes.self.code,
           }),
         ],
         enemy: [
           new CharacterAction({
             name: "Attack",
             value: 10,
-            target: TargetTypes.enemy,
+            target: TargetTypes.enemy.code,
           }),
           new CharacterAction({
             name: "Focus",
             value: 20,
-            target: TargetTypes.self,
+            target: TargetTypes.self.code,
           }),
         ],
       },

@@ -1,8 +1,12 @@
 <template>
   <div>
-    <icon-text :iconClass="getSkillIcon(skill.type)" v-for="skill in skills" :key="skill._id">{{
-      skill.name
-    }}</icon-text>
+    <icon-text
+      @click="$emit('onItemSelect', skill)"
+      :iconClass="getSkillIcon(skill.type)"
+      v-for="skill in skills"
+      :key="skill._id"
+      >{{ skill.name }}</icon-text
+    >
   </div>
 </template>
 

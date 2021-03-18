@@ -11,17 +11,29 @@
               :isLoading="isLoading"
               class="h-100"
               textClass="text-white"
-              text="Getting inventory"
+              text="Getting available skills"
             >
+              <skills-list
+                @onItemSelect="handleSkillSelect"
+                :skills="skills"
+              ></skills-list>
             </content-loading>
           </content-box>
         </div>
         <div class="col-12 col-md-4 p-1 d-flex flex-column">
           <content-box class="p-3 content-container mb-2">
             <section-header class="text-white">Selected Skill</section-header>
+            <skill-detail
+              emptyMessage="Please select a skill"
+              :skill="selectedSkill"
+            ></skill-detail>
           </content-box>
           <content-box class="p-3 content-container mb-2">
             <section-header class="text-white">Current Skills</section-header>
+            <character-skills-list
+              @onDelete="handleDeleteSkill"
+              :skills="modifiedSkills"
+            ></character-skills-list>
           </content-box>
           <div class="btn-group w-100 actions-container">
             <button
@@ -47,18 +59,23 @@
 
 <script>
 import SectionHeader from "./SectionHeader.vue";
+import SkillsList from "./SkillsList.vue";
 import ContentLoading from "./ContentLoading.vue";
 import ContentBox from "./ContentBox.vue";
 import AccountsMixin from "../shared/mixins/AccountsMixin.vue";
 import SkillsMixin from "../shared/mixins/SkillsMixin.vue";
-import { mapState, mapActions } from "vuex";
+import SkillDetail from "./SkillDetail.vue";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { SkillInfo } from "../models/skillInfo";
+import CharacterSkillsList from "./CharacterSkillsList.vue";
 
 export default {
   data() {
     return {
       isLoading: false,
       skills: [],
+      modifiedSkills: [],
+      selectedSkill: new SkillInfo(),
     };
   },
   created() {
@@ -69,22 +86,63 @@ export default {
       character: (state) => state.character.current,
     }),
     isEquipDisabled: function() {
-      return false;
+      return (
+        this.modifiedSkills.some((x) => x._id === this.selectedSkill._id) ||
+        this.selectedSkill._id === ""
+      );
     },
     isSaveDisabled: function() {
+      if (this.modifiedSkills.length != this.character.skills.length) {
+        return false;
+      }
+
+      const matched = this.modifiedSkills.reduce((accumulator, value) => {
+        if (!this.character.skills.find((x) => x._id === value._id)) {
+          return accumulator;
+        } else {
+          return accumulator + 1;
+        }
+      }, 0);
+
+      if (matched === this.character.skills.length) {
+        return true;
+      }
+
       return false;
     },
   },
   methods: {
-    ...mapActions("character", ["fetchCharacter"]),
-    handleSave: async function() {},
-    handleEquip: function() {},
+    ...mapActions("character", ["fetchCharacter", "updateSkills"]),
+    ...mapMutations("app", ["setLoading"]),
+    handleSkillSelect: function(skill) {
+      this.selectedSkill = skill;
+    },
+    handleDeleteSkill: function(skill) {
+      this.modifiedSkills = this.modifiedSkills.filter(
+        (x) => x._id !== skill._id
+      );
+    },
+    handleSave: async function() {
+      this.setLoading({
+        isLoading: true,
+        loadingText: "Saving...",
+      });
+      await this.updateSkills(this.modifiedSkills.map((x) => x._id));
+      this.setLoading(false);
+    },
+    handleEquip: function() {
+      this.modifiedSkills.push(this.selectedSkill);
+    },
     setupSkills: async function() {
+      this.isLoading = true;
+
       await this.fetchCharacter({
         accountId: this.getCurrentLoggedIn(),
       });
 
-      this.isLoading = true;
+      this.modifiedSkills = [
+        ...this.character.skills.map((i) => new SkillInfo(i)),
+      ];
       const response = await this.getAvailableSkills(this.character._id);
       if (response.ok === true) {
         this.skills = response.body.map((i) => new SkillInfo(i));
@@ -97,6 +155,9 @@ export default {
     ContentLoading,
     ContentBox,
     SectionHeader,
+    SkillsList,
+    SkillDetail,
+    CharacterSkillsList,
   },
   mixins: [AccountsMixin, SkillsMixin],
 };

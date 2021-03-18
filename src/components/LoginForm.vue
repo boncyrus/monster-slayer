@@ -75,9 +75,9 @@
               </div>
 
               <div class="px-1">
-                <button type="button" class="btn btn-info">
-                  <router-link to="/accounts/create">Signup</router-link>
-                </button>
+                <router-link class="btn btn-info text-white" to="/accounts/create"
+                  >Signup</router-link
+                >
               </div>
             </div>
           </form>

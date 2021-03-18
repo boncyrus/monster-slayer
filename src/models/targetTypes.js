@@ -1,4 +1,10 @@
 export const TargetTypes = Object.freeze({
-    self: 'self',
-    enemy: 'enemy'
+    self: {
+        code: 'self',
+        description: 'Self'
+    },
+    enemy: {
+        code: 'enemy',
+        description: 'Enemy'
+    }
 })

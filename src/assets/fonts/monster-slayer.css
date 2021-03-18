@@ -116,3 +116,6 @@
 .icon-trident:before {
   content: "\e91d";
 }
+.icon-back:before {
+  content: "\e91e";
+}

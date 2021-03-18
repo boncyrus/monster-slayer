@@ -36,12 +36,27 @@ const actions = {
         return Promise.resolve(state.current);
     },
 
-    async updateEquipment(context, { weaponId, armorId }) {
-        const { commit, state, dispatch } = context;
+    async updateEquipment({ commit, state, dispatch }, { weaponId, armorId }) {
         commit('setLoading', true);
         await Vue.http.put(
             routes.updateCharacterEquipment(state.current._id).url,
             new UpdateEquipmentRequest(weaponId, armorId));
+
+        await dispatch('fetchCharacter', {
+            accountId: state.current.accountId,
+            invalidate: true
+        });
+
+        commit('setLoading', false);
+
+        return Promise.resolve(state.current);
+    },
+
+    async updateSkills({ commit, state, dispatch }, skillArr) {
+        commit('setLoading', true);
+        await Vue.http.put(
+            routes.updateCharacterSkills(state.current._id).url,
+            skillArr);
 
         await dispatch('fetchCharacter', {
             accountId: state.current.accountId,

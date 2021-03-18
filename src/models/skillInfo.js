@@ -7,7 +7,7 @@ export class SkillInfo {
     classId = 0;
     lvlReq = 0;
     damage = 0
-    target = TargetTypes.enemy;
+    target = TargetTypes.enemy.code;
     cost = 0;
     type = SkillTypes.physical.code;
 

@@ -48,7 +48,7 @@ const routes = [
     component: CharacterInfoPage,
     meta: {
       layout: 'main-layout',
-      music: 'inventory'
+      music: 'inventory',
     }
   },
   {
@@ -56,7 +56,7 @@ const routes = [
     component: InventoryPage,
     meta: {
       layout: 'main-layout',
-      music: 'inventory'
+      music: 'inventory',
     }
   },
   {
@@ -64,7 +64,7 @@ const routes = [
     component: DungeonsPage,
     meta: {
       layout: 'main-layout',
-      music: 'inventory'
+      music: 'inventory',
     }
   },
   {
@@ -79,7 +79,7 @@ const routes = [
     component: SkillsInfoPage,
     meta: {
       layout: 'main-layout',
-      music: 'inventory'
+      music: 'inventory',
     }
   },
   {

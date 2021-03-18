@@ -35,6 +35,12 @@ export const routes = {
             method: 'PUT'
         }
     },
+    updateCharacterSkills: function (characterId) {
+        return {
+            url: `${character}/${characterId}/skills`,
+            method: 'PUT'
+        }
+    },
     getDungeons: function (characterId) {
         return {
             url: `${character}/${characterId}/dungeons`,
