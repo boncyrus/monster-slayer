@@ -54,7 +54,7 @@ export const routes = {
         }
     },
     enterDungeon: {
-        url: '/dungeons/enter',
+        url: 'dungeons/enter',
         method: 'POST'
     }
 }

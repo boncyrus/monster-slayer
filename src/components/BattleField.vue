@@ -50,12 +50,15 @@
 import BattleLogs from "./BattleLogs.vue";
 import Character from "./Character.vue";
 import PlayerControls from "./PlayerControls.vue";
-import AccountsMixin from "../shared/mixins/AccountsMixin";
+import AccountsMixin from "../shared/mixins/AccountsMixin.vue";
 import CharacterAction from "../models/characterAction";
+import CharacterMixin from "../shared/mixins/CharacterMixin.vue";
 import BattleLog from "../models/battleLog";
-import RandomizerMixin from "../shared/mixins/RandomizerMixin";
+import RandomizerMixin from "../shared/mixins/RandomizerMixin.vue";
 import { CharacterModel } from "../models/characterModel";
 import { TargetTypes } from "../models/targetTypes";
+import { mapActions } from "vuex";
+import { EnterDungeonRequest } from "../models/enterDungeonRequest";
 
 export default {
   created: function() {
@@ -106,6 +109,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("character", ["fetchCharacter"]),
     ensureHealth: function(value, character, stats) {
       if (value <= 0) {
         character.stats.health = 0;
@@ -125,12 +129,24 @@ export default {
       this.isLoading = true;
       this.battleLogs = [];
       this.isBattleDone = false;
-      const playerResponse = await this.getCharacter(this.getCurrentLoggedIn());
-      if (playerResponse.ok === true) {
-        this.player = new CharacterModel(playerResponse.body);
-        this.playerStats.maxHealth = this.player.stats.health;
-        this.playerStats.maxMana = this.player.stats.mana;
-      }
+      const playerData = await this.fetchCharacter({
+        accountId: this.getCurrentLoggedIn(),
+        invalidate: true,
+      });
+
+      this.player = new CharacterModel(playerData);
+      this.playerStats.maxHealth = this.player.stats.health;
+      this.playerStats.maxMana = this.player.stats.mana;
+
+      const dungeonId = this.$route.params.id;
+      const enterDungeonResponse = await this.enterDungeon(
+        new EnterDungeonRequest({
+          characterId: this.player._id,
+          dungeonId,
+        })
+      );
+
+      console.log(enterDungeonResponse);
 
       // TODO: Retrieve the enemy details.
       const enemyResponse = await this.getCharacter(
@@ -317,7 +333,7 @@ export default {
     PlayerControls,
     BattleLogs,
   },
-  mixins: [AccountsMixin, RandomizerMixin],
+  mixins: [AccountsMixin, CharacterMixin, RandomizerMixin],
 };
 </script>
 
