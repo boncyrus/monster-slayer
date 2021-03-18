@@ -88,7 +88,8 @@ export default {
     isEquipDisabled: function() {
       return (
         this.modifiedSkills.some((x) => x._id === this.selectedSkill._id) ||
-        this.selectedSkill._id === ""
+        this.selectedSkill._id === "" || 
+        this.modifiedSkills.length === 3
       );
     },
     isSaveDisabled: function() {
