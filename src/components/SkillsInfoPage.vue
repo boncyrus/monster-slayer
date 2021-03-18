@@ -87,9 +87,9 @@ export default {
     }),
     isEquipDisabled: function() {
       return (
-        this.modifiedSkills.some((x) => x._id === this.selectedSkill._id) ||
-        this.selectedSkill._id === "" || 
-        this.modifiedSkills.length === 3
+        this.modifiedSkills.some((x) => x._id === this.selectedSkill._id) || // It's already in the skills list
+        this.selectedSkill._id === "" || // No selected skill yet
+        this.modifiedSkills.length === 4 // can only equip 4 items
       );
     },
     isSaveDisabled: function() {
