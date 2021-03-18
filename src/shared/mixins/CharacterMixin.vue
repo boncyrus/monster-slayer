@@ -32,6 +32,9 @@ export default {
         updateRequest
       );
     },
+    getDungeons: function(characterId) {
+      return this.$http.get(routes.getDungeons(characterId).url);
+    },
   },
 };
 </script>

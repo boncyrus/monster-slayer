@@ -1,10 +1,11 @@
 <template>
-  <div
-    class="shadow-sm rounded"
-    style="background-color: rgba(0,0,0, 0.75)"
-  >
+  <div class="shadow-sm rounded root" style="background-color: rgba(0,0,0, 0.75)">
     <slot></slot>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.root {
+  overflow: hidden;
+}
+</style>

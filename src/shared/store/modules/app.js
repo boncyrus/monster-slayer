@@ -12,7 +12,6 @@ const mutations = {
         }
 
         if (typeof payload === 'object') {
-            console.log('isObject');
             state.isLoading = payload.isLoading;
             state.loadingText = payload.loadingText
         }

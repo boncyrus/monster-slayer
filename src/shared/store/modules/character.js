@@ -1,4 +1,5 @@
 import { CharacterModel } from '../../../models/characterModel';
+import { UpdateEquipmentRequest } from '../../../models/updateEquipmentRequest';
 import { routes } from '../../../models/apiConfig';
 import { CharacterMainInfo as CharacterMainInfoModel } from "../../../models/characterMainInfo";
 import { CharacterStatsInfo as CharacterStatsInfoModel } from "../../../models/characterStatsInfo";
@@ -31,6 +32,25 @@ const actions = {
             commit('setCurrent', state.current);
             commit('setLoading', false);
         }
+
+        return Promise.resolve(state.current);
+    },
+
+    async updateEquipment(context, { weaponId, armorId }) {
+        const { commit, state, dispatch } = context;
+        commit('setLoading', true);
+        await Vue.http.put(
+            routes.updateCharacterEquipment(state.current._id).url,
+            new UpdateEquipmentRequest(weaponId, armorId));
+
+        await dispatch('fetchCharacter', {
+            accountId: state.current.accountId,
+            invalidate: true
+        });
+
+        commit('setLoading', false);
+
+        return Promise.resolve(state.current);
     }
 }
 

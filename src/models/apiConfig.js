@@ -34,5 +34,11 @@ export const routes = {
             url: `${character}/${characterId}/equipment`,
             method: 'PUT'
         }
+    },
+    getDungeons: function (characterId) {
+        return {
+            url: `${character}/${characterId}/dungeons`,
+            method: 'GET'
+        }
     }
 }

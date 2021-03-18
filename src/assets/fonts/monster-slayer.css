@@ -26,17 +26,93 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-armor:before {
-  content: "\e900";
-}
 .icon-sword:before {
   content: "\e901";
 }
-
 .icon-physical:before {
   content: "\e902";
 }
-
 .icon-magical:before {
   content: "\e903";
+}
+.icon-breastplate:before {
+  content: "\e904";
+}
+.icon-broadsword:before {
+  content: "\e905";
+}
+.icon-fencingarmor:before {
+  content: "\e906";
+}
+.icon-garb:before {
+  content: "\e907";
+}
+.icon-tunic:before {
+  content: "\e908";
+}
+.icon-axe:before {
+  content: "\e909";
+}
+.icon-staff:before {
+  content: "\e90a";
+}
+.icon-armor:before {
+  content: "\e900";
+}
+.icon-robe:before {
+  content: "\e90b";
+}
+.icon-rod:before {
+  content: "\e90c";
+}
+.icon-hammer:before {
+  content: "\e90d";
+}
+.icon-bow:before {
+  content: "\e90e";
+}
+.icon-rapier:before {
+  content: "\e90f";
+}
+.icon-javelin:before {
+  content: "\e910";
+}
+.icon-masamune:before {
+  content: "\e911";
+}
+.icon-pole:before {
+  content: "\e912";
+}
+.icon-scepter:before {
+  content: "\e913";
+}
+.icon-halberd:before {
+  content: "\e914";
+}
+.icon-zweihander:before {
+  content: "\e915";
+}
+.icon-prime:before {
+  content: "\e916";
+}
+.icon-cassowar:before {
+  content: "\e917";
+}
+.icon-lance:before {
+  content: "\e918";
+}
+.icon-spear:before {
+  content: "\e919";
+}
+.icon-frostmourne:before {
+  content: "\e91a";
+}
+.icon-mjollnir:before {
+  content: "\e91b";
+}
+.icon-mace:before {
+  content: "\e91c";
+}
+.icon-trident:before {
+  content: "\e91d";
 }

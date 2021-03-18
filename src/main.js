@@ -17,6 +17,7 @@ import DefaultLayout from './layouts/DefaultLayout.vue';
 import MainLayout from './layouts/MainLayout.vue';
 import { store } from './shared/store/rootStore';
 import { uppercase } from './shared/filters/uppercase';
+import SkillsInfoPage from './components/SkillsInfoPage.vue';
 
 Vue.config.productionTip = false
 Vue.use(Vuelidate);
@@ -69,7 +70,17 @@ const routes = [
   {
     ...routeConfig.dungeons.battle,
     component: BattleField,
-    music: 'battle'
+    meta: {
+      music: 'battle'
+    }
+  },
+  {
+    ...routeConfig.skills.index,
+    component: SkillsInfoPage,
+    meta: {
+      layout: 'main-layout',
+      music: 'inventory'
+    }
   },
   {
     path: '/',

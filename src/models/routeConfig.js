@@ -17,6 +17,12 @@ export const routeConfig = {
             name: 'inventory'
         }
     },
+    skills: {
+        index: {
+            path: '/character/skills',
+            name: 'skills'
+        }
+    },
     dungeons: {
         index: {
             path: '/dungeons',

@@ -70,7 +70,6 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import SectionHeader from "./SectionHeader.vue";
 import InventoryItemStats from "./InventoryItemStats.vue";
 import { WeaponTypes } from "../models/weaponTypes";
-import { UpdateEquipmentRequest } from "../models/updateEquipmentRequest";
 
 export default {
   data() {
@@ -128,11 +127,14 @@ export default {
     this.setupInventory();
   },
   methods: {
-    ...mapMutations("app", {
-      setLoading: "setLoading",
-    }),
+    ...mapMutations("app", ["setLoading"]),
+    ...mapActions("character", ["fetchCharacter", "updateEquipment"]),
     handleSave: async function() {
-      this.setLoading(true);
+      this.setLoading({
+        isLoading: true,
+        loadingText: "Saving...",
+      });
+
       let armorId;
       let weaponId;
 
@@ -145,8 +147,10 @@ export default {
         }
       });
 
-      const request = new UpdateEquipmentRequest(weaponId, armorId);
-      await this.updateCharacterEquipment(this.character._id, request);
+      await this.updateEquipment({
+        weaponId,
+        armorId,
+      });
 
       this.setLoading(false);
     },
