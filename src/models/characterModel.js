@@ -51,6 +51,7 @@ export class CharacterModel {
     totalExp = 0;
     level = 0;
     _id = '';
+    image = '';
 
     constructor(data) {
         Object.assign(this, data);

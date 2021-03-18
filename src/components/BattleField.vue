@@ -16,9 +16,8 @@
           class="w-50"
           :health="enemyStats.healthPercentage"
           :mana="enemyStats.manaPercentage"
-          :classType="enemy.classType"
+          :imageSrc="`images/enemies/${enemy.image}.png`"
           :name="enemy.name"
-          :flipAvatar="true"
         >
         </character>
       </div>
@@ -149,12 +148,12 @@ export default {
       console.log(enterDungeonResponse);
 
       // TODO: Retrieve the enemy details.
-      const enemyResponse = await this.getCharacter(
-        "60424d47ecba8b001765869f" // Bon enemy
-      );
+      // const enemyResponse = await this.getCharacter(
+      //   "60424d47ecba8b001765869f" // Bon enemy
+      // );
 
-      if (enemyResponse.ok === true) {
-        this.enemy = new CharacterModel(enemyResponse.body);
+      if (enterDungeonResponse.ok === true) {
+        this.enemy = new CharacterModel(enterDungeonResponse.body.enemy);
         this.enemyStats.maxHealth = this.enemy.stats.health;
         this.enemyStats.maxMana = this.enemy.stats.mana;
       }

@@ -3,7 +3,7 @@
     :class="flipped ? 'flipped-avatar' : ''"
     :width="width"
     :height="height"
-    :src="getAvatar(classType)"
+    :src="imageSrc ? imageSrc : getAvatar(classType)"
   />
 </template>
 
@@ -26,6 +26,7 @@ export default {
       default: 160,
     },
     flipped: Boolean,
+    imageSrc: String,
   },
   mixins: [CharacterMixin],
 };

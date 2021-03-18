@@ -16,8 +16,7 @@
       </div>
 
       <div class="col-12 avatar-container d-flex justify-content-center">
-        <!-- <img width="160" height="160" :src="getAvatar(classType)" /> -->
-        <avatar :classType="classType" :flipped="flipAvatar"></avatar>
+        <avatar :classType="classType" :imageSrc="imageSrc" :flipped="flipAvatar"></avatar>
       </div>
     </div>
   </div>
@@ -35,6 +34,7 @@ export default {
     mana: Number,
     name: String,
     classType: Number,
+    imageSrc: String,
   },
   components: {
     CharacterStatus,
