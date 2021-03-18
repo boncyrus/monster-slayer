@@ -49,13 +49,20 @@
 import SectionHeader from "./SectionHeader.vue";
 import ContentLoading from "./ContentLoading.vue";
 import ContentBox from "./ContentBox.vue";
-import { mapState } from "vuex";
+import AccountsMixin from "../shared/mixins/AccountsMixin.vue";
+import SkillsMixin from "../shared/mixins/SkillsMixin.vue";
+import { mapState, mapActions } from "vuex";
+import { SkillInfo } from "../models/skillInfo";
 
 export default {
   data() {
     return {
       isLoading: false,
+      skills: [],
     };
+  },
+  created() {
+    this.setupSkills();
   },
   computed: {
     ...mapState({
@@ -69,14 +76,29 @@ export default {
     },
   },
   methods: {
+    ...mapActions("character", ["fetchCharacter"]),
     handleSave: async function() {},
     handleEquip: function() {},
+    setupSkills: async function() {
+      await this.fetchCharacter({
+        accountId: this.getCurrentLoggedIn(),
+      });
+
+      this.isLoading = true;
+      const response = await this.getAvailableSkills(this.character._id);
+      if (response.ok === true) {
+        this.skills = response.body.map((i) => new SkillInfo(i));
+      }
+
+      this.isLoading = false;
+    },
   },
   components: {
     ContentLoading,
     ContentBox,
     SectionHeader,
   },
+  mixins: [AccountsMixin, SkillsMixin],
 };
 </script>
 

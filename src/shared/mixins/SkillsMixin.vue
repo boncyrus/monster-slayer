@@ -1,5 +1,6 @@
 <script>
 import { SkillTypes } from "../../models/skillTypes";
+import { routes } from "../../models/apiConfig";
 
 export default {
   methods: {
@@ -12,6 +13,9 @@ export default {
         default:
           return "";
       }
+    },
+    getAvailableSkills: async function(characterId) {
+      return this.$http.get(routes.getAvailableSkills(characterId).url);
     },
   },
 };

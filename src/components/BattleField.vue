@@ -39,17 +39,6 @@
           <battle-logs :logs="battleLogs"></battle-logs>
         </div>
       </div>
-      <div style="display: none">
-        <audio
-          src="music/battle-music.mp3"
-          id="menu-audio"
-          loop
-          autoplay
-          type="audio/mpeg"
-        >
-          Audio not supported
-        </audio>
-      </div>
     </template>
     <template v-else>
       <img class="loading" width="340" height="280" src="images/loading.gif" />

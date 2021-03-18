@@ -157,9 +157,8 @@ export default {
     handleEquip: function(inventory) {
       this.newEquipments.push(inventory);
     },
-    ...mapActions("character", ["fetchCharacter"]),
     async setupInventory() {
-      this.$store.dispatch("character/fetchCharacter", {
+      await this.fetchCharacter({
         accountId: this.getCurrentLoggedIn(),
       });
 
