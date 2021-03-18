@@ -35,6 +35,9 @@ export default {
     getDungeons: function(characterId) {
       return this.$http.get(routes.getDungeons(characterId).url);
     },
+    enterDungeon: function(enterDungeonRequest) {
+      return this.$http.post(routes.enterDungeon.url, enterDungeonRequest);
+    },
   },
 };
 </script>

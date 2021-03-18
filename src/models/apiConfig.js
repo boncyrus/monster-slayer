@@ -52,5 +52,9 @@ export const routes = {
             url: `${character}/${characterId}/skills`,
             method: 'GET'
         }
+    },
+    enterDungeon: {
+        url: '/dungeons/enter',
+        method: 'POST'
     }
 }
