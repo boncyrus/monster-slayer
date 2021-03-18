@@ -30,6 +30,15 @@
               text="Getting dungeon information"
             >
               <dungeon-details :dungeon="selectedDungeon"></dungeon-details>
+              <div class="w-100 mt-2">
+                <button
+                  @click="handleDungeonEnter"
+                  v-if="!selectedDungeon.locked"
+                  class="btn btn-outline-info center-block"
+                >
+                  Enter Dungeon
+                </button>
+              </div>
             </content-loading>
           </content-box>
         </div>
@@ -64,6 +73,9 @@ export default {
     DungeonDetails,
   },
   methods: {
+    handleDungeonEnter: function() {
+      this.$router.push(`/dungeons/${this.selectedDungeon._id}`);
+    },
     setupDungeons: async function() {
       this.isLoading = true;
       const response = await this.getDungeons(this.getCurrentCharacterId());
