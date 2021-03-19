@@ -57,6 +57,7 @@ const routes = [
     meta: {
       layout: 'main-layout',
       music: 'inventory',
+      backTo: routeConfig.character.index
     }
   },
   {
@@ -65,13 +66,16 @@ const routes = [
     meta: {
       layout: 'main-layout',
       music: 'inventory',
+      backTo: routeConfig.character.index
     }
   },
   {
     ...routeConfig.dungeons.battle,
     component: BattleField,
     meta: {
-      music: 'battle'
+      music: 'battle',
+      layout: 'main-layout',
+      backTo: routeConfig.dungeons.index
     }
   },
   {
@@ -80,6 +84,7 @@ const routes = [
     meta: {
       layout: 'main-layout',
       music: 'inventory',
+      backTo: routeConfig.character.index
     }
   },
   {

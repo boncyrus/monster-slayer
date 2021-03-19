@@ -2,7 +2,15 @@
   <div
     class="d-flex flex-column justify-content-center content-container w-100"
   >
-    <template v-if="!isLoading">
+    <template v-if="isLoading">
+      <content-loading
+        :isLoading="isLoading"
+        class="text-white"
+        text="Preparing battlefield"
+      >
+      </content-loading>
+    </template>
+    <template v-else>
       <div class="d-flex character-container justify-content-center">
         <character
           class="w-50"
@@ -39,9 +47,6 @@
         </div>
       </div>
     </template>
-    <template v-else>
-      <img class="loading" width="340" height="280" src="images/loading.gif" />
-    </template>
   </div>
 </template>
 
@@ -56,15 +61,16 @@ import BattleLog from "../models/battleLog";
 import RandomizerMixin from "../shared/mixins/RandomizerMixin.vue";
 import { CharacterModel } from "../models/characterModel";
 import { TargetTypes } from "../models/targetTypes";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import { EnterDungeonRequest } from "../models/enterDungeonRequest";
+import ContentLoading from "./ContentLoading.vue";
 
 export default {
-  created: function() {
+  created: function () {
     this.reset();
   },
   watch: {
-    "player.stats.health": function(value) {
+    "player.stats.health": function (value) {
       this.ensureHealth(value, this.player, this.playerStats);
 
       this.playerStats.healthPercentage = this.computePoints(
@@ -72,7 +78,7 @@ export default {
         this.playerStats.maxHealth
       );
     },
-    "player.stats.mana": function(value) {
+    "player.stats.mana": function (value) {
       this.ensureMana(value, this.player, this.playerStats);
 
       this.playerStats.manaPercentage = this.computePoints(
@@ -80,7 +86,7 @@ export default {
         this.playerStats.maxMana
       );
     },
-    "enemy.stats.health": function(value) {
+    "enemy.stats.health": function (value) {
       this.ensureHealth(value, this.enemy, this.enemyStats);
 
       this.enemyStats.healthPercentage = this.computePoints(
@@ -88,7 +94,7 @@ export default {
         this.enemyStats.maxHealth
       );
     },
-    "enemy.stats.mana": function(value) {
+    "enemy.stats.mana": function (value) {
       this.ensureMana(value, this.enemy, this.enemyStats);
 
       this.enemyStats.manaPercentage = this.computePoints(
@@ -96,7 +102,7 @@ export default {
         this.enemyStats.maxMana
       );
     },
-    isBattleDone: function(value) {
+    isBattleDone: function (value) {
       if (value === true) {
         setTimeout(() => {
           let name =
@@ -109,7 +115,8 @@ export default {
   },
   methods: {
     ...mapActions("character", ["fetchCharacter"]),
-    ensureHealth: function(value, character, stats) {
+    ...mapMutations("app", ["setLoading"]),
+    ensureHealth: function (value, character, stats) {
       if (value <= 0) {
         character.stats.health = 0;
         this.isBattleDone = true;
@@ -117,14 +124,14 @@ export default {
         character.stats.health = stats.maxHealth;
       }
     },
-    ensureMana: function(value, character, stats) {
+    ensureMana: function (value, character, stats) {
       if (value <= 0) {
         character.stats.mana = 0;
       } else if (value > stats.maxMana) {
         character.stats.mana = stats.maxMana;
       }
     },
-    reset: async function() {
+    reset: async function () {
       this.isLoading = true;
       this.battleLogs = [];
       this.isBattleDone = false;
@@ -160,17 +167,17 @@ export default {
 
       this.isLoading = false;
     },
-    computePoints: function(value, max) {
+    computePoints: function (value, max) {
       return (value / max) * 100;
     },
-    addBattleLog: function(log) {
+    addBattleLog: function (log) {
       this.battleLogs.push(log);
     },
-    beforeActionExecute: function(action) {
+    beforeActionExecute: function (action) {
       console.log(action);
       return true;
     },
-    onActionExecute: function(action) {
+    onActionExecute: function (action) {
       this.battleLogs = [];
 
       if (action.target === TargetTypes.enemy.code) {
@@ -182,10 +189,10 @@ export default {
       this.addBattleLog(this.createActionLog(this.player.name, action));
       this.performEnemyMove();
     },
-    beforeSkillExecute: function(skill) {
+    beforeSkillExecute: function (skill) {
       return skill.cost <= this.player.stats.mana;
     },
-    onSkillExecute: function(skill) {
+    onSkillExecute: function (skill) {
       this.battleLogs = [];
 
       if (skill.target === TargetTypes.enemy.code) {
@@ -201,11 +208,11 @@ export default {
       this.addBattleLog(this.createSkillLog(this.player.name, skill));
       this.performEnemyMove();
     },
-    beforeEnemyActionExecute: function(action) {
+    beforeEnemyActionExecute: function (action) {
       console.log(action);
       return true;
     },
-    onEnemyActionExecute: function(action) {
+    onEnemyActionExecute: function (action) {
       if (action.target === TargetTypes.enemy.code) {
         this.player.stats.health -= Math.abs(action.value);
       } else {
@@ -214,10 +221,10 @@ export default {
 
       this.addBattleLog(this.createActionLog(this.enemy.name, action));
     },
-    beforeEnemySkillExecute: function(skill) {
+    beforeEnemySkillExecute: function (skill) {
       return skill.cost <= this.enemy.stats.mana;
     },
-    onEnemySkillExecute: function(skill) {
+    onEnemySkillExecute: function (skill) {
       if (skill.target === TargetTypes.enemy.code) {
         this.player.stats.health -= Math.abs(skill.damage);
       } else {
@@ -229,7 +236,7 @@ export default {
       this.enemy.stats.mana -= Math.abs(skill.cost);
       this.addBattleLog(this.createSkillLog(this.enemy.name, skill));
     },
-    createActionLog: function(name, action) {
+    createActionLog: function (name, action) {
       if (action.target === TargetTypes.enemy.code) {
         return new BattleLog(
           `${name} performed ${action.name}! Dealt ${action.value} damage!`
@@ -242,7 +249,7 @@ export default {
         }
       }
     },
-    createSkillLog: function(name, skill) {
+    createSkillLog: function (name, skill) {
       const damage = Math.abs(skill.damage);
       if (skill.target === TargetTypes.enemy.code) {
         return new BattleLog(
@@ -256,7 +263,7 @@ export default {
         }
       }
     },
-    performEnemyMove: function() {
+    performEnemyMove: function () {
       const move = this.randomize(0, 1);
 
       if (move === 0) {
@@ -284,9 +291,9 @@ export default {
     return {
       player: new CharacterModel(),
       enemy: new CharacterModel(),
+      isLoading: false,
       battleLogs: [],
       isBattleDone: false,
-      isLoading: true,
       playerStats: {
         healthPercentage: 100,
         manaPercentage: 100,
@@ -331,6 +338,7 @@ export default {
     Character,
     PlayerControls,
     BattleLogs,
+    ContentLoading,
   },
   mixins: [AccountsMixin, CharacterMixin, RandomizerMixin],
 };

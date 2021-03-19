@@ -1,10 +1,14 @@
 <template>
   <div>
-    <div class="d-flex">
+    <div class="d-flex mb-2">
       <div class="btn-group">
-        <router-link :to="$router.history.current.meta.backTo" v-if="hasBack" @click="goBack" class="btn btn-primary text-white">
-          <icon-text iconClass="icon-back"></icon-text>
-        </router-link>
+        <button
+          v-if="hasBack"
+          @click="goBack"
+          class="btn btn-primary text-white d-flex align-items-center justify-content-center"
+        >
+          <i class="icon-back"></i>
+        </button>
         <router-link class="btn btn-secondary" to="/character"
           >Character</router-link
         >
@@ -27,21 +31,17 @@
 
 <script>
 import AccountsMixin from "../shared/mixins/AccountsMixin";
-import IconText from "../components/IconText.vue";
 
 export default {
-  components: {
-    IconText,
-  },
+  components: {},
   computed: {
-    hasBack: function() {
-      return !!this.$router.history.current.meta.backTo;
+    hasBack: function () {
+      return !!this.$route.meta.backTo;
     },
   },
   methods: {
     goBack() {
-      console.log(this.$router.history.current.meta.backTo);
-      this.$router.replace(this.$router.history.current.meta.backTo)
+      this.$router.replace(this.$route.meta.backTo);
     },
   },
   mixins: [AccountsMixin],
