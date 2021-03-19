@@ -1,5 +1,9 @@
 <template>
-  <div id="app" class="container">
+  <div
+    id="app"
+    class="container"
+    :style="`background-image: url('${currentBg}')`"
+  >
     <page-loading
       :isLoading="isLoading"
       :loadingText="loadingText"
@@ -26,14 +30,18 @@ export default {
       isLoading: (state) => state.app.isLoading,
       loadingText: (state) => state.app.loadingText,
       currentSong: (state) => state.app.currentSong,
+      currentBg: (state) => state.app.bg,
     }),
     layout() {
+      // Reset bg everytime..
+      this.setBg();
+
       this.setSong(this.$route.meta.music);
       return this.$route.meta.layout || "default-layout";
     },
   },
   methods: {
-    ...mapMutations("app", ["setSong"]),
+    ...mapMutations("app", ["setSong", "setBg"]),
   },
   components: {
     PageLoading,
@@ -48,7 +56,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: black;
-  background: url("/images/game-battle-bg.png");
+  /* background: url("/images/game-battle-bg.png"); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

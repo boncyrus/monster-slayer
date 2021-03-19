@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     ...mapActions("character", ["fetchCharacter"]),
-    ...mapMutations("app", ["setLoading"]),
+    ...mapMutations("app", ["setLoading", 'setBg']),
     ensureHealth: function (value, character, stats) {
       if (value <= 0) {
         character.stats.health = 0;
@@ -154,6 +154,7 @@ export default {
 
       if (enterDungeonResponse.ok === true) {
         this.enemy = new CharacterModel(enterDungeonResponse.body.enemy);
+        this.setBg(`/images/dungeons/${enterDungeonResponse.body.dungeon.image}.jpg`)
         this.enemyStats.maxHealth = this.enemy.stats.health;
         this.enemyStats.maxMana = this.enemy.stats.mana;
       }

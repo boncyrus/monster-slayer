@@ -1,7 +1,12 @@
-const state = () => ({
+const initialState = {
     isLoading: false,
     loadingText: '',
-    currentSong: ''
+    currentSong: '',
+    bg: '/images/game-battle-bg.png'
+};
+
+const state = () => ({
+    ...initialState
 });
 
 const mutations = {
@@ -23,6 +28,14 @@ const mutations = {
         }
 
         state.currentSong = `music/${payload}-music.mp3`;
+    },
+    setBg(state, payload) {
+        if (!payload) {
+            state.bg = initialState.bg
+            return
+        }
+
+        state.bg = payload;
     }
 }
 
