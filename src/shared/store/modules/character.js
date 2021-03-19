@@ -3,6 +3,7 @@ import { UpdateEquipmentRequest } from '../../../models/updateEquipmentRequest';
 import { routes } from '../../../models/apiConfig';
 import { CharacterMainInfo as CharacterMainInfoModel } from "../../../models/characterMainInfo";
 import { CharacterStatsInfo as CharacterStatsInfoModel } from "../../../models/characterStatsInfo";
+import { FinishBattleRequest } from '../../../models/finishBattleRequest';
 import { LocalStorageKeys } from '../../../shared/localStorage/localStorageKeys';
 import Vue from 'vue';
 
@@ -57,6 +58,22 @@ const actions = {
         await Vue.http.put(
             routes.updateCharacterSkills(state.current._id).url,
             skillArr);
+
+        await dispatch('fetchCharacter', {
+            accountId: state.current.accountId,
+            invalidate: true
+        });
+
+        commit('setLoading', false);
+
+        return Promise.resolve(state.current);
+    },
+
+    async finishBattle({ commit, state, dispatch }, payload) {
+        commit('setLoading', true);
+        await Vue.http.post(
+            routes.dungeons.finishBattle.url,
+            new FinishBattleRequest(payload));
 
         await dispatch('fetchCharacter', {
             accountId: state.current.accountId,

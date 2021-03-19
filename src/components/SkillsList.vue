@@ -1,6 +1,6 @@
 <template>
   <div class="row no-gutters text-white">
-    <div class="col-6 mb-2" v-for="skill in skills" :key="skill._id">
+    <div class="col-auto m-1" v-for="skill in skills" :key="skill._id">
       <button
         class="btn btn-outline-dark"
         @click="$emit('onItemSelect', skill)"

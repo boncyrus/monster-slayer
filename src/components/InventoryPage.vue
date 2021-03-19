@@ -1,8 +1,6 @@
 <template>
   <div class="d-flex flex-column">
-    <h2 class="text-center text-white font-weight-bold p-0 m-0">
-      Inventory
-    </h2>
+    <h2 class="text-center text-white font-weight-bold p-0 m-0">Inventory</h2>
     <div class="container content-container">
       <div class="row h-100 justify-content-center">
         <div class="col-md-8 col-12 p-1">
@@ -83,7 +81,7 @@ export default {
     };
   },
   watch: {
-    selectedItem: function(value) {
+    selectedItem: function (value) {
       if (value.item._id === "") {
         return;
       }
@@ -103,13 +101,13 @@ export default {
     ...mapState({
       character: (state) => state.character.current,
     }),
-    isEquipDisabled: function() {
+    isEquipDisabled: function () {
+      console.log(this.character);
+      console.log(this.selectedItem);
+
       if (this.selectedItem._id === "") {
         return true;
-      } else if (
-        this.character.classType !== this.selectedItem.item.classId &&
-        this.character.weapon._id === this.selectedItem.item._id
-      ) {
+      } else if (this.selectedItem._id === this.currentEquipment._id) {
         return true;
       } else if (this.newEquipments.length > 0) {
         return this.newEquipments.some(
@@ -117,9 +115,9 @@ export default {
         );
       }
 
-      return true;
+      return false;
     },
-    isSaveDisabled: function() {
+    isSaveDisabled: function () {
       return this.newEquipments.length <= 1;
     },
   },
@@ -129,7 +127,7 @@ export default {
   methods: {
     ...mapMutations("app", ["setLoading"]),
     ...mapActions("character", ["fetchCharacter", "updateEquipment"]),
-    handleSave: async function() {
+    handleSave: async function () {
       this.setLoading({
         isLoading: true,
         loadingText: "Saving...",
@@ -154,7 +152,7 @@ export default {
 
       this.setLoading(false);
     },
-    handleEquip: function(inventory) {
+    handleEquip: function (inventory) {
       this.newEquipments.push(inventory);
     },
     async setupInventory() {
@@ -165,7 +163,10 @@ export default {
       this.isLoading = true;
       const response = await this.getCurrentInventory();
       if (response.ok === true) {
-        this.inventory = response.body.map((i) => new InventoryDetails(i));
+        // Filtered equipments
+        this.inventory = response.body
+          .map((i) => new InventoryDetails(i))
+          .filter((x) => x.item.classId === this.character.classType);
       }
 
       this.isLoading = false;

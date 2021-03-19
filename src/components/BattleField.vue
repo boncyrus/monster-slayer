@@ -64,6 +64,9 @@ import { TargetTypes } from "../models/targetTypes";
 import { mapActions, mapMutations } from "vuex";
 import { EnterDungeonRequest } from "../models/enterDungeonRequest";
 import ContentLoading from "./ContentLoading.vue";
+import { DungeonPreview } from "../models/dungeonPreview";
+import { FinishBattleRequest } from "../models/finishBattleRequest";
+import { DungeonInfo } from '../models/dungeonInfo';
 
 export default {
   created: function () {
@@ -102,20 +105,30 @@ export default {
         this.enemyStats.maxMana
       );
     },
-    isBattleDone: function (value) {
+    isBattleDone: async function (value) {
       if (value === true) {
-        setTimeout(() => {
-          let name =
-            this.player.stats.health <= 0 ? this.enemy.name : this.player.name;
-          alert(`${name} won!`);
-          this.reset();
-        }, 800);
+        console.log("battle done");
+        await this.finishBattle(
+          new FinishBattleRequest({
+            characterId: this.player._id,
+            dungeonId: this.dungeonInfo._id,
+            enemyId: this.enemy._id,
+          })
+        );
+
+        this.reset();
+        // setTimeout(() => {
+        //   let name =
+        //     this.player.stats.health <= 0 ? this.enemy.name : this.player.name;
+        //   alert(`${name} won!`);
+        //   this.reset();
+        // }, 800);
       }
     },
   },
   methods: {
-    ...mapActions("character", ["fetchCharacter"]),
-    ...mapMutations("app", ["setLoading", 'setBg']),
+    ...mapActions("character", ["fetchCharacter", 'finishBattle']),
+    ...mapMutations("app", ["setLoading", "setBg"]),
     ensureHealth: function (value, character, stats) {
       if (value <= 0) {
         character.stats.health = 0;
@@ -154,7 +167,10 @@ export default {
 
       if (enterDungeonResponse.ok === true) {
         this.enemy = new CharacterModel(enterDungeonResponse.body.enemy);
-        this.setBg(`/images/dungeons/${enterDungeonResponse.body.dungeon.image}.jpg`)
+        this.dungeonInfo = new DungeonInfo(enterDungeonResponse.body.dungeon)
+        this.setBg(
+          `/images/dungeons/${enterDungeonResponse.body.dungeon.image}.jpg`
+        );
         this.enemyStats.maxHealth = this.enemy.stats.health;
         this.enemyStats.maxMana = this.enemy.stats.mana;
       }
@@ -283,6 +299,7 @@ export default {
   },
   data() {
     return {
+      dungeonInfo: new DungeonPreview(),
       player: new CharacterModel(),
       enemy: new CharacterModel(),
       isLoading: false,

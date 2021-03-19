@@ -13,7 +13,7 @@ export class InventoryDetails {
             int: 0,
             luk: 0
         },
-        id: '',
+        _id: '',
         name: '',
         classId: '',
         type: WeaponTypes.weapon

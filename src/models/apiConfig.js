@@ -53,8 +53,14 @@ export const routes = {
             method: 'GET'
         }
     },
-    enterDungeon: {
-        url: 'dungeons/enter',
-        method: 'POST'
+    dungeons: {
+        enter: {
+            url: 'dungeons/enter',
+            method: 'POST'
+        },
+        finishBattle: {
+            url: 'dungeons/battle',
+            method: 'POST'
+        }
     }
 }

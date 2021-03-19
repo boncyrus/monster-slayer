@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex justify-content-between w-100">
-    <div class="w-50" v-for="item in inventory" :key="item.item._id">
+  <div class="row no-gutters">
+    <div class="col-auto m-1" v-for="item in inventory" :key="item.item._id">
       <button
         type="button"
         @click="$emit('onItemSelect', item)"
