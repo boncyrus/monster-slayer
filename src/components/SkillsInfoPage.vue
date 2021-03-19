@@ -146,7 +146,9 @@ export default {
       ];
       const response = await this.getAvailableSkills(this.character._id);
       if (response.ok === true) {
-        this.skills = response.body.map((i) => new SkillInfo(i));
+        this.skills = response.body
+          .map((i) => new SkillInfo(i))
+          .filter((x) => x.classId === this.character.classType); // Filtered skills
       }
 
       this.isLoading = false;

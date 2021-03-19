@@ -30,10 +30,25 @@
             <section-header class="text-white"
               >Current Equipment</section-header
             >
-            <inventory-item-stats
-              emptyMessage="Please select an item"
-              :info="currentEquipment"
-            ></inventory-item-stats>
+            <content-loading
+              :isLoading="isLoading"
+              textClass="text-white"
+              text="Getting equipped items"
+            >
+              <div class="row no-gutters">
+                <div
+                  class="col-12"
+                  v-for="eq in newEquipments"
+                  :key="eq.item._id"
+                >
+                  <icon-text
+                    class="text-white"
+                    :iconClass="getEquipmentIcon(eq.item)"
+                    >{{ eq.item.name }}</icon-text
+                  >
+                </div>
+              </div>
+            </content-loading>
           </content-box>
           <div class="btn-group w-100 inventory-actions-container">
             <button
@@ -63,11 +78,13 @@ import { InventoryDetails } from "../models/inventoryDetails";
 import ContentLoading from "./ContentLoading.vue";
 import ContentBox from "./ContentBox.vue";
 import InventoryList from "./InventoryList.vue";
-import AccountsMixin from "../shared/mixins/AccountsMixin";
+import AccountsMixin from "../shared/mixins/AccountsMixin.vue";
+import EquipmentMixin from "../shared/mixins/EquipmentMixin.vue";
 import { mapState, mapActions, mapMutations } from "vuex";
 import SectionHeader from "./SectionHeader.vue";
 import InventoryItemStats from "./InventoryItemStats.vue";
 import { WeaponTypes } from "../models/weaponTypes";
+import IconText from "./IconText.vue";
 
 export default {
   data() {
@@ -81,51 +98,47 @@ export default {
     };
   },
   watch: {
-    selectedItem: function (value) {
+    selectedItem: function(value) {
       if (value.item._id === "") {
         return;
       }
 
+      let id = "";
       if (value.item.type === WeaponTypes.armor) {
-        this.currentEquipment = this.newEquipments.find(
-          (x) => x.item._id === this.character.equipment.armor._id
-        );
+        id = this.character.equipment.armor._id;
       } else {
-        this.currentEquipment = this.newEquipments.find(
-          (x) => x.item._id === this.character.equipment.weapon._id
-        );
+        id = this.character.equipment.weapon._id;
       }
+
+      this.currentEquipment = this.newEquipments.find((x) => x.item._id === id);
     },
   },
   computed: {
     ...mapState({
       character: (state) => state.character.current,
     }),
-    isEquipDisabled: function () {
-      console.log(this.character);
-      console.log(this.selectedItem);
-
-      if (this.selectedItem._id === "") {
+    isEquipDisabled: function() {
+      if (this.selectedItem.item._id === "") {
         return true;
-      } else if (this.selectedItem._id === this.currentEquipment._id) {
+      } else if (
+        this.newEquipments.some(
+          (x) => this.selectedItem.item._id === x.item._id
+        )
+      ) {
         return true;
-      } else if (this.newEquipments.length > 0) {
-        return this.newEquipments.some(
-          (x) => x.item.type === this.selectedItem.item.type
-        );
       }
 
       return false;
     },
-    isSaveDisabled: function () {
-      if (this.selectedItem._id === "") {
+    isSaveDisabled: function() {
+      if (this.selectedItem.item._id === "") {
         return true;
       }
 
       const matched = this.newEquipments.reduce((accumulator, value) => {
         if (
-          this.character.equipment.weapon._id !== value._id &&
-          this.character.equipment.armor._id !== value._id
+          this.character.equipment.weapon._id !== value.item._id &&
+          this.character.equipment.armor._id !== value.item._id
         ) {
           return accumulator;
         } else {
@@ -133,7 +146,7 @@ export default {
         }
       }, 0);
 
-      return matched === this.character.skills.length;
+      return matched === 2;
     },
   },
   created() {
@@ -142,7 +155,7 @@ export default {
   methods: {
     ...mapMutations("app", ["setLoading"]),
     ...mapActions("character", ["fetchCharacter", "updateEquipment"]),
-    handleSave: async function () {
+    handleSave: async function() {
       this.setLoading({
         isLoading: true,
         loadingText: "Saving...",
@@ -167,8 +180,20 @@ export default {
 
       this.setLoading(false);
     },
-    handleEquip: function (inventory) {
-      this.newEquipments.push(inventory);
+    handleEquip: function(inventory) {
+      if (inventory.item.type === WeaponTypes.weapon) {
+        this.$set(
+          this.newEquipments,
+          0,
+          new InventoryDetails({ ...inventory })
+        );
+      } else {
+        this.$set(
+          this.newEquipments,
+          1,
+          new InventoryDetails({ ...inventory })
+        );
+      }
     },
     async setupInventory() {
       await this.fetchCharacter({
@@ -183,7 +208,16 @@ export default {
           .map((i) => new InventoryDetails(i))
           .filter((x) => x.item.classId === this.character.classType);
 
-        this.newEquipments = [...this.inventory];
+        this.newEquipments = [
+          new InventoryDetails({
+            item: this.character.equipment.weapon,
+          }),
+          new InventoryDetails({
+            item: this.character.equipment.armor,
+          }),
+        ];
+
+        console.log(this.newEquipments);
       }
 
       this.isLoading = false;
@@ -192,7 +226,7 @@ export default {
       if (this.selectedItem === inventory) {
         this.selectedItem = new InventoryDetails();
       } else {
-        this.selectedItem = inventory;
+        this.selectedItem = new InventoryDetails({ ...inventory });
       }
     },
   },
@@ -202,8 +236,9 @@ export default {
     InventoryList,
     SectionHeader,
     InventoryItemStats,
+    IconText,
   },
-  mixins: [CharacterMixin, AccountsMixin],
+  mixins: [CharacterMixin, AccountsMixin, EquipmentMixin],
 };
 </script>
 
