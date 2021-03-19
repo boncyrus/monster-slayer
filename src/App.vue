@@ -33,9 +33,6 @@ export default {
       currentBg: (state) => state.app.bg,
     }),
     layout() {
-      // Reset bg everytime..
-      this.setBg();
-
       this.setSong(this.$route.meta.music);
       return this.$route.meta.layout || "default-layout";
     },
