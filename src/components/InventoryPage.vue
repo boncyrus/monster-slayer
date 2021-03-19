@@ -87,11 +87,11 @@ export default {
       }
 
       if (value.item.type === WeaponTypes.armor) {
-        this.currentEquipment = this.inventory.find(
+        this.currentEquipment = this.newEquipments.find(
           (x) => x.item._id === this.character.equipment.armor._id
         );
       } else {
-        this.currentEquipment = this.inventory.find(
+        this.currentEquipment = this.newEquipments.find(
           (x) => x.item._id === this.character.equipment.weapon._id
         );
       }
@@ -118,7 +118,22 @@ export default {
       return false;
     },
     isSaveDisabled: function () {
-      return this.newEquipments.length <= 1;
+      if (this.selectedItem._id === "") {
+        return true;
+      }
+
+      const matched = this.newEquipments.reduce((accumulator, value) => {
+        if (
+          this.character.equipment.weapon._id !== value._id &&
+          this.character.equipment.armor._id !== value._id
+        ) {
+          return accumulator;
+        } else {
+          return accumulator + 1;
+        }
+      }, 0);
+
+      return matched === this.character.skills.length;
     },
   },
   created() {
@@ -167,6 +182,8 @@ export default {
         this.inventory = response.body
           .map((i) => new InventoryDetails(i))
           .filter((x) => x.item.classId === this.character.classType);
+
+        this.newEquipments = [...this.inventory];
       }
 
       this.isLoading = false;
