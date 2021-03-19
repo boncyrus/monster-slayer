@@ -4,7 +4,7 @@
       <div
         class="col-12 d-flex justify-content-center text-center mb-2 text-white"
       >
-        <icon-text :iconClass="getDefaultEquipmentIcon(info.item.type)">{{
+        <icon-text :iconClass="getEquipmentIcon(info.item)">{{
           info.item.name | uppercase
         }}</icon-text>
       </div>

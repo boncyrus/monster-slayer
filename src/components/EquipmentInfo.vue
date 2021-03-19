@@ -1,26 +1,24 @@
 <template>
   <div>
-    <icon-text iconClass="icon-sword">{{ weapon }}</icon-text>
-    <icon-text iconClass="icon-armor">{{ armor }}</icon-text>
+    <icon-text :iconClass="getEquipmentIcon(weapon)">{{
+      weapon.name
+    }}</icon-text>
+    <icon-text :iconClass="getEquipmentIcon(armor)">{{ armor.name }}</icon-text>
   </div>
 </template>
 
 <script>
 import IconText from "./IconText.vue";
+import EquipmentMixin from "../shared/mixins/EquipmentMixin.vue";
 
 export default {
   props: {
-    armor: {
-      type: String,
-      default: "None",
-    },
-    weapon: {
-      type: String,
-      default: "None",
-    },
+    armor: Object,
+    weapon: Object,
   },
   components: {
     IconText,
   },
+  mixins: [EquipmentMixin],
 };
 </script>

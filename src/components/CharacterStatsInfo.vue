@@ -67,8 +67,8 @@
       <div class="col-6">
         <section-header>Equipments</section-header>
         <equipment-info
-          :weapon="info.equipment.weapon.name"
-          :armor="info.equipment.armor.name"
+          :weapon="info.equipment.weapon"
+          :armor="info.equipment.armor"
         ></equipment-info>
       </div>
       <div class="col-6">

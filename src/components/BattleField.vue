@@ -152,13 +152,6 @@ export default {
         })
       );
 
-      console.log(enterDungeonResponse);
-
-      // TODO: Retrieve the enemy details.
-      // const enemyResponse = await this.getCharacter(
-      //   "60424d47ecba8b001765869f" // Bon enemy
-      // );
-
       if (enterDungeonResponse.ok === true) {
         this.enemy = new CharacterModel(enterDungeonResponse.body.enemy);
         this.enemyStats.maxHealth = this.enemy.stats.health;

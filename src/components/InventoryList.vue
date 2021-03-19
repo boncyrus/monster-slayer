@@ -8,7 +8,7 @@
       >
         <icon-text
           textClass="text-white"
-          :iconClass="`${getIconClass(item.item.type)} text-white`"
+          :iconClass="`${getEquipmentIcon(item.item)} text-white`"
           >{{ item.item.name }}</icon-text
         >
       </button>
@@ -18,7 +18,7 @@
 
 <script>
 import IconText from "./IconText.vue";
-import { WeaponTypes } from "../models/weaponTypes";
+import EquipmentMixin from "../shared/mixins/EquipmentMixin.vue";
 
 export default {
   props: {
@@ -30,10 +30,6 @@ export default {
   components: {
     IconText,
   },
-  methods: {
-    getIconClass: function(weaponType) {
-      return weaponType === WeaponTypes.weapon ? "icon-sword" : "icon-armor";
-    },
-  },
+  mixins: [EquipmentMixin],
 };
 </script>
