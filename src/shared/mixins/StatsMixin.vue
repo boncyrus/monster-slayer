@@ -4,7 +4,8 @@ export default {
     healthInfo: function() {
       const base = this.info.stats.health;
       const bonus =
-        this.info.equipment.weapon.bonus.health + this.info.equipment.armor.bonus.health;
+        this.info.equipment.weapon.bonus.health +
+        this.info.equipment.armor.bonus.health;
       const total = base + bonus;
 
       return {
@@ -15,7 +16,9 @@ export default {
     },
     manaInfo: function() {
       const base = this.info.stats.mana;
-      const bonus = this.info.equipment.weapon.bonus.mana + this.info.equipment.armor.bonus.mana;
+      const bonus =
+        this.info.equipment.weapon.bonus.mana +
+        this.info.equipment.armor.bonus.mana;
       const total = base + bonus;
 
       return {
@@ -26,7 +29,9 @@ export default {
     },
     offInfo: function() {
       const base = this.info.stats.off;
-      const bonus = this.info.equipment.weapon.bonus.off + this.info.equipment.armor.bonus.off;
+      const bonus =
+        this.info.equipment.weapon.bonus.off +
+        this.info.equipment.armor.bonus.off;
       const total = base + bonus;
 
       return {
@@ -37,7 +42,9 @@ export default {
     },
     defInfo: function() {
       const base = this.info.stats.def;
-      const bonus = this.info.equipment.weapon.bonus.def + this.info.equipment.armor.bonus.def;
+      const bonus =
+        this.info.equipment.weapon.bonus.def +
+        this.info.equipment.armor.bonus.def;
       const total = base + bonus;
 
       return {
@@ -48,7 +55,9 @@ export default {
     },
     agiInfo: function() {
       const base = this.info.stats.agi;
-      const bonus = this.info.equipment.weapon.bonus.agi + this.info.equipment.armor.bonus.agi;
+      const bonus =
+        this.info.equipment.weapon.bonus.agi +
+        this.info.equipment.armor.bonus.agi;
       const total = base + bonus;
 
       return {
@@ -59,7 +68,9 @@ export default {
     },
     intInfo: function() {
       const base = this.info.stats.int;
-      const bonus = this.info.equipment.weapon.bonus.int + this.info.equipment.armor.bonus.int;
+      const bonus =
+        this.info.equipment.weapon.bonus.int +
+        this.info.equipment.armor.bonus.int;
       const total = base + bonus;
 
       return {
@@ -70,7 +81,9 @@ export default {
     },
     lukInfo: function() {
       const base = this.info.stats.luk;
-      const bonus = this.info.equipment.weapon.bonus.luk + this.info.equipment.armor.bonus.luk;
+      const bonus =
+        this.info.equipment.weapon.bonus.luk +
+        this.info.equipment.armor.bonus.luk;
       const total = base + bonus;
 
       return {
@@ -78,6 +91,15 @@ export default {
         bonus,
         total,
       };
+    },
+  },
+  methods: {
+    computeTotalStats: function(character, statName) {
+      const base = character.stats[statName];
+      const bonus =
+        character.equipment.weapon.bonus[statName] +
+        character.equipment.armor.bonus[statName];
+      return base + bonus;
     },
   },
 };
