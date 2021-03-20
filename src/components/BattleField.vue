@@ -72,6 +72,7 @@ import PlayerControls from "./PlayerControls.vue";
 import AccountsMixin from "../shared/mixins/AccountsMixin.vue";
 import CharacterAction from "../models/characterAction";
 import CharacterMixin from "../shared/mixins/CharacterMixin.vue";
+import StatsMixin from "../shared/mixins/StatsMixin.vue";
 import BattleLog from "../models/battleLog";
 import RandomizerMixin from "../shared/mixins/RandomizerMixin.vue";
 import { CharacterModel } from "../models/characterModel";
@@ -83,6 +84,11 @@ import { DungeonPreview } from "../models/dungeonPreview";
 import { FinishBattleRequest } from "../models/finishBattleRequest";
 import { DungeonInfo } from "../models/dungeonInfo";
 import { FinishBattleResponse } from "../models/finishBattleResponse";
+import { SkillTypes } from "../models/skillTypes";
+
+const critMultiplier = 1.5;
+const statThreshold = 500;
+const lukThreshold = 5;
 
 export default {
   beforeRouteLeave(to, from, next) {
@@ -209,16 +215,116 @@ export default {
       console.log(action);
       return true;
     },
-    onActionExecute: function (action) {
-      this.battleLogs = [];
+    computeProcPercentage: function (stat, threshold) {
+      return (stat / threshold) * 100;
+    },
+    computeDamage: function (stat, damage) {
+      return stat * (Math.abs(damage) / 100);
+    },
+    computeDefense: function (stat) {
+      return (stat / statThreshold) * 100;
+    },
+    getDamageInfo: function (player, enemy, move) {
+      let initialDamage = 0;
+      let reduction = 0;
+      let damage = 0;
+      let isCrit = false;
+      let isMissed = false;
 
-      if (action.target === TargetTypes.enemy.code) {
-        this.enemy.stats.health -= Math.abs(action.value);
+      if (move instanceof CharacterAction) {
+        if (move.target === TargetTypes.self.code) {
+          initialDamage = this.computeTotalStats(player, "int") * 0.75;
+        } else {
+          isMissed = this.probability(
+            this.computeProcPercentage(
+              this.computeTotalStats(player, "agi"),
+              statThreshold
+            )
+          );
+
+          if (isMissed === false) {
+            isCrit = this.probability(
+              this.computeProcPercentage(
+                this.computeTotalStats(player, "luk"),
+                lukThreshold
+              )
+            );
+
+            initialDamage = this.computeDamage(
+              this.computeTotalStats(player, "off"),
+              100
+            );
+
+            reduction = this.computeDefense(
+              this.computeTotalStats(enemy, "def")
+            );
+          }
+        }
+
+        damage =
+          initialDamage * (isCrit === true ? critMultiplier : 1) - reduction;
       } else {
-        this.player.stats.mana += Math.abs(action.value);
+        if (move.target === TargetTypes.self.code) {
+          initialDamage = this.computeDamage(
+            this.computeTotalStats(player, "int"),
+            move.damage
+          );
+        } else {
+          const statName =
+            move.type === SkillTypes.magical.code ? "int" : "off";
+
+          isMissed = this.probability(
+            this.computeProcPercentage(
+              this.computeTotalStats(player, "agi"),
+              statThreshold
+            )
+          );
+
+          if (isMissed === false) {
+            isCrit = this.probability(
+              this.computeProcPercentage(
+                this.computeTotalStats(player, "luk"),
+                lukThreshold
+              )
+            );
+
+            initialDamage = this.computeDamage(
+              this.computeTotalStats(player, statName),
+              move.damage
+            );
+
+            reduction = this.computeDefense(
+              this.computeTotalStats(enemy, "def")
+            );
+          }
+        }
+
+        console.log(initialDamage, reduction);
+        damage = initialDamage - reduction;
       }
 
-      this.addBattleLog(this.createActionLog(this.player.name, action));
+      const damageInfo = {
+        value: Math.round(damage),
+        name: move.name,
+        isCrit,
+        isMissed,
+        target: move.target,
+        damage: Math.round(damage),
+      };
+
+      return damageInfo;
+    },
+    onActionExecute: function (action) {
+      this.battleLogs = [];
+      const damageInfo = this.getDamageInfo(this.player, this.enemy, action);
+
+      if (action.target === TargetTypes.enemy.code) {
+        this.enemy.stats.health -= damageInfo.value;
+      } else {
+        this.player.stats.mana += action.value;
+      }
+
+      this.addBattleLog(this.createActionLog(this.player.name, damageInfo));
       this.performEnemyMove();
     },
     beforeSkillExecute: function (skill) {
@@ -226,18 +332,18 @@ export default {
     },
     onSkillExecute: function (skill) {
       this.battleLogs = [];
+      const damageInfo = this.getDamageInfo(this.player, this.enemy, skill);
 
       if (skill.target === TargetTypes.enemy.code) {
-        this.enemy.stats.health -= Math.abs(skill.damage);
+        this.enemy.stats.health -= damageInfo.value;
       } else {
         if (skill.damage < 0) {
-          this.player.stats.health += Math.abs(skill.damage);
+          this.player.stats.health += damageInfo.value;
         }
       }
 
       this.player.stats.mana -= Math.abs(skill.cost);
-
-      this.addBattleLog(this.createSkillLog(this.player.name, skill));
+      this.addBattleLog(this.createSkillLog(this.player.name, damageInfo));
       this.performEnemyMove();
     },
     beforeEnemyActionExecute: function (action) {
@@ -245,33 +351,48 @@ export default {
       return true;
     },
     onEnemyActionExecute: function (action) {
+      let damageInfo = this.getDamageInfo(this.enemy, this.player, action);
+
       if (action.target === TargetTypes.enemy.code) {
-        this.player.stats.health -= Math.abs(action.value);
+        this.player.stats.health -= damageInfo.value;
       } else {
-        this.enemy.stats.mana += Math.abs(action.value);
+        this.enemy.stats.mana += damageInfo.value;
       }
 
-      this.addBattleLog(this.createActionLog(this.enemy.name, action));
+      this.addBattleLog(this.createActionLog(this.enemy.name, damageInfo));
     },
     beforeEnemySkillExecute: function (skill) {
       return skill.cost <= this.enemy.stats.mana;
     },
     onEnemySkillExecute: function (skill) {
+      const damageInfo = this.getDamageInfo(this.enemy, this.player, skill);
       if (skill.target === TargetTypes.enemy.code) {
-        this.player.stats.health -= Math.abs(skill.damage);
+        this.player.stats.health -= damageInfo.damage;
       } else {
-        if (skill.damge < 0) {
-          this.enemy.stats.health += Math.abs(skill.damage);
+        if (skill.damage < 0) {
+          this.enemy.stats.health += damageInfo.damage;
         }
       }
 
       this.enemy.stats.mana -= Math.abs(skill.cost);
-      this.addBattleLog(this.createSkillLog(this.enemy.name, skill));
+      this.addBattleLog(this.createSkillLog(this.enemy.name, damageInfo));
+    },
+    createDamageInfoText: function (damageInfo) {
+      let additionalText = "";
+      if (damageInfo.isMissed === true) {
+        additionalText = " Missed!";
+      } else if (damageInfo.isCrit === true) {
+        additionalText = " Critical!";
+      }
+
+      return additionalText;
     },
     createActionLog: function (name, action) {
       if (action.target === TargetTypes.enemy.code) {
         return new BattleLog(
-          `${name} performed ${action.name}! Dealt ${action.value} damage!`
+          `${name} performed ${action.name}! Dealt ${
+            action.value
+          } damage!${this.createDamageInfoText(action)}`
         );
       } else if (action.target === TargetTypes.self.code) {
         if (action.name === "Focus") {
@@ -282,15 +403,16 @@ export default {
       }
     },
     createSkillLog: function (name, skill) {
-      const damage = Math.abs(skill.damage);
       if (skill.target === TargetTypes.enemy.code) {
         return new BattleLog(
-          `${name} used ${skill.name}! Dealt ${damage} damage!`
+          `${name} used ${skill.name}! Dealt ${
+            skill.damage
+          } damage!${this.createDamageInfoText(skill)}`
         );
       } else {
         if (skill.damage < 0) {
           return new BattleLog(
-            `${name} used ${skill.name}! ${damage} hp restored!`
+            `${name} used ${skill.name}! ${skill.damage} hp restored!`
           );
         }
       }
@@ -376,7 +498,7 @@ export default {
     ContentLoading,
     BattleOutcome,
   },
-  mixins: [AccountsMixin, CharacterMixin, RandomizerMixin],
+  mixins: [AccountsMixin, CharacterMixin, RandomizerMixin, StatsMixin],
 };
 </script>
 
