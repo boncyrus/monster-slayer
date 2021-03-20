@@ -8,9 +8,7 @@
     >
       <div
         :class="overlay(dungeon)"
-        :style="
-          `background-image: url('/images/dungeons/${dungeon.image}.jpg')`
-        "
+        :style="`background-image: url('/images/dungeons/${dungeon.image}.jpg')`"
       >
         <img
           v-if="dungeon.locked"
@@ -40,7 +38,7 @@ export default {
     },
   },
   methods: {
-    overlay: function(dungeon) {
+    overlay: function (dungeon) {
       const selectedClass = dungeon === this.selected ? "selected" : "";
 
       return `lock-overlay-container ${selectedClass}`;
@@ -74,6 +72,7 @@ export default {
   top: 0;
   left: 0;
   box-sizing: content-box;
+  transition: all 0.2s ease;
 }
 
 .selected {

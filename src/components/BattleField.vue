@@ -181,6 +181,9 @@ export default {
       });
 
       this.player = new CharacterModel(playerData);
+      this.player.stats.health = this.computeTotalStats(this.player, "health");
+      this.player.stats.mana = this.computeTotalStats(this.player, "mana");
+
       this.playerStats.maxHealth = this.player.stats.health;
       this.playerStats.maxMana = this.player.stats.mana;
 
@@ -198,6 +201,8 @@ export default {
         );
         this.enemy = new CharacterModel(enterDungeonResponse.body.enemy);
         this.dungeonInfo = new DungeonInfo(enterDungeonResponse.body.dungeon);
+        this.enemy.stats.health = this.computeTotalStats(this.enemy, "health");
+        this.enemy.stats.mana = this.computeTotalStats(this.enemy, "mana");
 
         this.enemyStats.maxHealth = this.enemy.stats.health;
         this.enemyStats.maxMana = this.enemy.stats.mana;
@@ -260,9 +265,6 @@ export default {
             );
           }
         }
-
-        damage =
-          initialDamage * (isCrit === true ? critMultiplier : 1) - reduction;
       } else {
         if (move.target === TargetTypes.self.code) {
           initialDamage = this.computeDamage(
@@ -298,10 +300,10 @@ export default {
             );
           }
         }
-
-        console.log(initialDamage, reduction);
-        damage = initialDamage - reduction;
       }
+
+      damage =
+        initialDamage * (isCrit === true ? critMultiplier : 1) - reduction;
 
       const damageInfo = {
         value: Math.round(damage),
@@ -410,11 +412,9 @@ export default {
           } damage!${this.createDamageInfoText(skill)}`
         );
       } else {
-        if (skill.damage < 0) {
-          return new BattleLog(
-            `${name} used ${skill.name}! ${skill.damage} hp restored!`
-          );
-        }
+        return new BattleLog(
+          `${name} used ${skill.name}! ${skill.damage} hp restored!`
+        );
       }
     },
     performEnemyMove: function () {
