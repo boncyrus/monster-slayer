@@ -29,7 +29,15 @@
             ></skill-detail>
           </content-box>
           <content-box class="p-3 content-container mb-2">
-            <section-header class="text-white">Current Skills</section-header>
+            <div class="d-flex align-items-center">
+              <section-header class="text-white mb-0">Current Skills</section-header>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <i class="icon-info text-white ml-2" v-on="on" />
+                </template>
+                <span>You can only equip up to 4 skills.</span>
+              </v-tooltip>
+            </div>
             <character-skills-list
               @onDelete="handleDeleteSkill"
               :skills="modifiedSkills"

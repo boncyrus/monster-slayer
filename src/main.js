@@ -18,6 +18,7 @@ import MainLayout from './layouts/MainLayout.vue';
 import { store } from './shared/store/rootStore';
 import { uppercase } from './shared/filters/uppercase';
 import SkillsInfoPage from './components/SkillsInfoPage.vue';
+import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 Vue.use(Vuelidate);
@@ -103,5 +104,6 @@ router.beforeEach(loggedInGuard);
 new Vue({
   router,
   store,
+  vuetify,
   render: h => h(App)
 }).$mount('#app')

@@ -31,7 +31,12 @@
         <span><strong>COST</strong>: {{ skill.cost }} mana</span>
       </div>
       <div class="text-white">
-        <span><strong>DAMAGE</strong>: {{ skill.damage }}</span>
+        <span
+          ><strong>{{
+            skill.target === TargetTypes.self.code ? "HEAL" : "DAMAGE"
+          }}</strong
+          >: {{ Math.abs(skill.damage) }}</span
+        >
       </div>
     </template>
   </div>

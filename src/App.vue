@@ -1,22 +1,24 @@
 <template>
-  <div
-    id="app"
-    class="container"
-    :style="`background-image: url('${currentBg}')`"
-  >
-    <page-loading
-      :isLoading="isLoading"
-      :loadingText="loadingText"
-    ></page-loading>
-    <component :is="layout" class="content-container">
-      <router-view class="h-100" />
-    </component>
-    <div style="display: none">
-      <audio :src="currentSong" id="audio" loop autoplay type="audio/mpeg">
-        Audio not supported
-      </audio>
+  <v-app>
+    <div
+      id="app"
+      class="container"
+      :style="`background-image: url('${currentBg}')`"
+    >
+      <page-loading
+        :isLoading="isLoading"
+        :loadingText="loadingText"
+      ></page-loading>
+      <component :is="layout" class="content-container">
+        <router-view class="h-100" />
+      </component>
+      <div style="display: none">
+        <audio :src="currentSong" id="audio" loop autoplay type="audio/mpeg">
+          Audio not supported
+        </audio>
+      </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -58,6 +60,11 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   padding: 10px;
+}
+
+a {
+  color: white !important;
+  text-decoration: none;
 }
 
 .center-block {
