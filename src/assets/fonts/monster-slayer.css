@@ -119,3 +119,6 @@
 .icon-back:before {
   content: "\e91e";
 }
+.icon-info:before {
+  content: "\e91f";
+}
