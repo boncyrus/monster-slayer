@@ -1,5 +1,8 @@
 <template>
   <div class="d-flex flex-column">
+    <v-snackbar color="primary" centered content-class="text-center" :timeout="1500" v-model="saveSuccess">
+      <span class="text-white">Inventory saved!</span>
+    </v-snackbar>
     <h2 class="text-center text-white font-weight-bold p-0 m-0">Inventory</h2>
     <div class="container content-container">
       <div class="row h-100 justify-content-center">
@@ -95,6 +98,7 @@ export default {
       currentEquipment: new InventoryDetails(),
       newEquipments: [],
       isSaving: false,
+      saveSuccess: false,
     };
   },
   watch: {
@@ -156,6 +160,8 @@ export default {
     ...mapMutations("app", ["setLoading"]),
     ...mapActions("character", ["fetchCharacter", "updateEquipment"]),
     handleSave: async function() {
+      this.saveSuccess = false;
+
       this.setLoading({
         isLoading: true,
         loadingText: "Saving...",
@@ -177,6 +183,8 @@ export default {
         weaponId,
         armorId,
       });
+
+      this.saveSuccess = true;
 
       this.setLoading(false);
     },
