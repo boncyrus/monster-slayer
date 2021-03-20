@@ -1,6 +1,6 @@
 <template>
   <div class="row no-gutters">
-    <div class="col-auto m-1" v-for="item in inventory" :key="item.item._id">
+    <div class="col-auto m-1" v-for="item in inventory" :key="item._id">
       <button
         type="button"
         @click="$emit('onItemSelect', item)"

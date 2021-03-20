@@ -2,6 +2,20 @@
   <div
     class="d-flex flex-column justify-content-center content-container w-100"
   >
+    <v-dialog
+      persistent
+      transition="dialog-top-transition"
+      max-width="600"
+      :value="showDialog"
+    >
+      <template v-slot:default>
+        <battle-outcome
+          :details="battleOutcome"
+          @onGoBack="handleGoBack"
+          @onPlayAgain="handlePlayAgain"
+        ></battle-outcome>
+      </template>
+    </v-dialog>
     <template v-if="isLoading">
       <content-loading
         :isLoading="isLoading"
@@ -51,6 +65,7 @@
 </template>
 
 <script>
+import BattleOutcome from "./BattleOutcome.vue";
 import BattleLogs from "./BattleLogs.vue";
 import Character from "./Character.vue";
 import PlayerControls from "./PlayerControls.vue";
@@ -67,6 +82,7 @@ import ContentLoading from "./ContentLoading.vue";
 import { DungeonPreview } from "../models/dungeonPreview";
 import { FinishBattleRequest } from "../models/finishBattleRequest";
 import { DungeonInfo } from "../models/dungeonInfo";
+import { FinishBattleResponse } from "../models/finishBattleResponse";
 
 export default {
   beforeRouteLeave(to, from, next) {
@@ -111,8 +127,7 @@ export default {
     },
     isBattleDone: async function (value) {
       if (value === true) {
-        console.log("battle done");
-        await this.finishBattle(
+        this.battleOutcome = await this.finishBattle(
           new FinishBattleRequest({
             characterId: this.player._id,
             dungeonId: this.dungeonInfo._id,
@@ -120,19 +135,20 @@ export default {
           })
         );
 
-        this.reset();
-        // setTimeout(() => {
-        //   let name =
-        //     this.player.stats.health <= 0 ? this.enemy.name : this.player.name;
-        //   alert(`${name} won!`);
-        //   this.reset();
-        // }, 800);
+        this.showDialog = true;
       }
     },
   },
   methods: {
     ...mapActions("character", ["fetchCharacter", "finishBattle"]),
     ...mapMutations("app", ["setLoading", "setBg"]),
+    handlePlayAgain: function () {
+      this.reset();
+    },
+    handleGoBack: function () {
+      this.showDialog = false;
+      this.$router.replace(this.$route.meta.backTo);
+    },
     ensureHealth: function (value, character, stats) {
       if (value <= 0) {
         character.stats.health = 0;
@@ -150,6 +166,7 @@ export default {
     },
     reset: async function () {
       this.isLoading = true;
+      this.showDialog = false;
       this.battleLogs = [];
       this.isBattleDone = false;
       const playerData = await this.fetchCharacter({
@@ -304,6 +321,8 @@ export default {
   },
   data() {
     return {
+      showDialog: false,
+      battleOutcome: new FinishBattleResponse(),
       dungeonInfo: new DungeonPreview(),
       player: new CharacterModel(),
       enemy: new CharacterModel(),
@@ -355,6 +374,7 @@ export default {
     PlayerControls,
     BattleLogs,
     ContentLoading,
+    BattleOutcome,
   },
   mixins: [AccountsMixin, CharacterMixin, RandomizerMixin],
 };

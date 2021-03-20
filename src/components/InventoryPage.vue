@@ -116,7 +116,7 @@ export default {
     };
   },
   watch: {
-    selectedItem: function(value) {
+    selectedItem: function (value) {
       if (value.item._id === "") {
         return;
       }
@@ -135,7 +135,7 @@ export default {
     ...mapState({
       character: (state) => state.character.current,
     }),
-    isEquipDisabled: function() {
+    isEquipDisabled: function () {
       if (this.selectedItem.item._id === "") {
         return true;
       } else if (
@@ -148,7 +148,7 @@ export default {
 
       return false;
     },
-    isSaveDisabled: function() {
+    isSaveDisabled: function () {
       if (this.selectedItem.item._id === "") {
         return true;
       }
@@ -173,7 +173,7 @@ export default {
   methods: {
     ...mapMutations("app", ["setLoading"]),
     ...mapActions("character", ["fetchCharacter", "updateEquipment"]),
-    handleSave: async function() {
+    handleSave: async function () {
       this.saveSuccess = false;
 
       this.setLoading({
@@ -202,7 +202,7 @@ export default {
 
       this.setLoading(false);
     },
-    handleEquip: function(inventory) {
+    handleEquip: function (inventory) {
       if (inventory.item.type === WeaponTypes.weapon) {
         this.$set(
           this.newEquipments,
@@ -238,8 +238,6 @@ export default {
             item: this.character.equipment.armor,
           }),
         ];
-
-        console.log(this.newEquipments);
       }
 
       this.isLoading = false;

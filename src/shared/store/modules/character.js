@@ -1,5 +1,6 @@
 import { CharacterModel } from '../../../models/characterModel';
 import { UpdateEquipmentRequest } from '../../../models/updateEquipmentRequest';
+import { FinishBattleResponse } from '../../../models/finishBattleResponse';
 import { routes } from '../../../models/apiConfig';
 import { CharacterMainInfo as CharacterMainInfoModel } from "../../../models/characterMainInfo";
 import { CharacterStatsInfo as CharacterStatsInfoModel } from "../../../models/characterStatsInfo";
@@ -71,7 +72,7 @@ const actions = {
 
     async finishBattle({ commit, state, dispatch }, payload) {
         commit('setLoading', true);
-        await Vue.http.post(
+        const battleResponse = await Vue.http.post(
             routes.dungeons.finishBattle.url,
             new FinishBattleRequest(payload));
 
@@ -82,7 +83,7 @@ const actions = {
 
         commit('setLoading', false);
 
-        return Promise.resolve(state.current);
+        return Promise.resolve(new FinishBattleResponse(battleResponse.body));
     }
 }
 
