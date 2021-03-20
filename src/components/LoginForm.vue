@@ -68,7 +68,7 @@
                 <button
                   type="submit"
                   :disabled="$v.form.$invalid"
-                  class="btn btn-primary"
+                  class="btn btn-primary text-white"
                 >
                   Login
                 </button>

@@ -1,5 +1,14 @@
 <template>
   <div class="d-flex flex-column">
+    <v-snackbar
+      color="primary"
+      centered
+      content-class="text-center"
+      :timeout="1500"
+      v-model="saveSuccess"
+    >
+      <span class="text-white">Skills saved!</span>
+    </v-snackbar>
     <h2 class="text-center text-white font-weight-bold p-0 m-0">
       Skills
     </h2>
@@ -30,12 +39,14 @@
           </content-box>
           <content-box class="p-3 content-container mb-2">
             <div class="d-flex align-items-center">
-              <section-header class="text-white mb-0">Current Skills</section-header>
+              <section-header class="text-white mb-0"
+                >Current Skills</section-header
+              >
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <i class="icon-info text-white ml-2" v-on="on" />
                 </template>
-                <span>You can only equip up to 4 skills.</span>
+                <span>You can equip up to 4 skills.</span>
               </v-tooltip>
             </div>
             <character-skills-list
@@ -80,6 +91,7 @@ import CharacterSkillsList from "./CharacterSkillsList.vue";
 export default {
   data() {
     return {
+      saveSuccess: false,
       isLoading: false,
       skills: [],
       modifiedSkills: [],
@@ -132,11 +144,15 @@ export default {
       );
     },
     handleSave: async function() {
+      this.saveSuccess = false;
+
       this.setLoading({
         isLoading: true,
         loadingText: "Saving...",
       });
       await this.updateSkills(this.modifiedSkills.map((x) => x._id));
+
+      this.saveSuccess = true;
       this.setLoading(false);
     },
     handleEquip: function() {

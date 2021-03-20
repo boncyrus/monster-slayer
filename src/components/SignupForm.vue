@@ -156,7 +156,7 @@
           <button
             type="submit"
             :disabled="$v.form.$invalid"
-            class="btn btn-primary d-block m-auto"
+            class="btn btn-primary d-block m-auto text-white"
           >
             Create
           </button>

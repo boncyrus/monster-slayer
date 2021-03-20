@@ -1,5 +1,14 @@
 <template>
   <div>
+    <v-snackbar
+      color="primary"
+      top
+      content-class="text-center"
+      :timeout="1500"
+      v-model="loginFailed"
+    >
+      <span class="text-white">Invalid username or password!</span>
+    </v-snackbar>
     <login-form @onLogin="handleLogin"></login-form>
   </div>
 </template>
@@ -14,10 +23,17 @@ export default {
   components: {
     LoginForm,
   },
+  data() {
+    return {
+      loginFailed: false,
+    };
+  },
   mixins: [AccountsMixin],
   methods: {
     ...mapMutations("app", ["setLoading"]),
     handleLogin: async function(form) {
+      this.loginSuccess = false;
+
       this.setLoading({
         isLoading: true,
         loadingText: "Logging in",
@@ -29,7 +45,7 @@ export default {
           path: routeConfig.character.index.path,
         });
       } else {
-        alert("Failed to login.");
+        this.loginFailed = true;
       }
     },
   },

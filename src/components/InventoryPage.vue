@@ -1,6 +1,12 @@
 <template>
   <div class="d-flex flex-column">
-    <v-snackbar color="primary" centered content-class="text-center" :timeout="1500" v-model="saveSuccess">
+    <v-snackbar
+      color="primary"
+      centered
+      content-class="text-center"
+      :timeout="1500"
+      v-model="saveSuccess"
+    >
       <span class="text-white">Inventory saved!</span>
     </v-snackbar>
     <h2 class="text-center text-white font-weight-bold p-0 m-0">Inventory</h2>
@@ -30,9 +36,17 @@
             ></inventory-item-stats>
           </content-box>
           <content-box class="p-3 content-container mb-2">
-            <section-header class="text-white"
-              >Current Equipment</section-header
-            >
+            <div class="d-flex align-items-center mb-2">
+              <section-header class="text-white mb-0"
+                >Current Equipment</section-header
+              >
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <i class="icon-info text-white ml-2" v-on="on" />
+                </template>
+                <span>You can equip 1 weapon and armor.</span>
+              </v-tooltip>
+            </div>
             <content-loading
               :isLoading="isLoading"
               textClass="text-white"
