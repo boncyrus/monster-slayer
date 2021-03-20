@@ -89,6 +89,7 @@ import { SkillTypes } from "../models/skillTypes";
 const critMultiplier = 1.5;
 const statThreshold = 500;
 const lukThreshold = 5;
+const enemyMoveDelay = 500;
 
 export default {
   beforeRouteLeave(to, from, next) {
@@ -418,27 +419,29 @@ export default {
       }
     },
     performEnemyMove: function () {
-      const move = this.randomize(0, 1);
+      setTimeout(() => {
+        const move = this.randomize(0, 1);
 
-      if (move === 0) {
-        const action = this.actions.enemy[
-          this.randomize(0, this.actions.enemy.length - 1)
-        ];
-        const canExecute = this.beforeEnemyActionExecute(action);
+        if (move === 0) {
+          const action = this.actions.enemy[
+            this.randomize(0, this.actions.enemy.length - 1)
+          ];
+          const canExecute = this.beforeEnemyActionExecute(action);
 
-        if (canExecute === true) {
-          this.onEnemyActionExecute(action);
+          if (canExecute === true) {
+            this.onEnemyActionExecute(action);
+          }
+        } else {
+          const skill = this.enemy.skills[
+            this.randomize(0, this.enemy.skills.length - 1)
+          ];
+          const canExecute = this.beforeEnemySkillExecute(skill);
+
+          if (canExecute === true) {
+            this.onEnemySkillExecute(skill);
+          }
         }
-      } else {
-        const skill = this.enemy.skills[
-          this.randomize(0, this.enemy.skills.length - 1)
-        ];
-        const canExecute = this.beforeEnemySkillExecute(skill);
-
-        if (canExecute === true) {
-          this.onEnemySkillExecute(skill);
-        }
-      }
+      }, enemyMoveDelay);
     },
   },
   data() {
