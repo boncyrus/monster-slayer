@@ -6,6 +6,9 @@ export default {
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
+    probability: function(precentage) {
+      return Math.random() * 100 < precentage;
+    }
   },
 };
 </script>
