@@ -1,24 +1,29 @@
 <template>
-  <v-app>
-    <div
-      id="app"
-      class="container"
-      :style="`background-image: url('${currentBg}')`"
-    >
-      <page-loading
-        :isLoading="isLoading"
-        :loadingText="loadingText"
-      ></page-loading>
-      <component :is="layout" class="content-container">
-        <router-view class="h-100" />
-      </component>
-      <div style="display: none">
-        <audio :src="currentSong" id="audio" loop autoplay type="audio/mpeg">
-          Audio not supported
-        </audio>
+  <div
+    style="height: 100vh;"
+    class="my-2 d-flex flex-column justify-content-center"
+  >
+    <v-app>
+      <div
+        id="app"
+        class="container"
+        :style="`background-image: url('${currentBg}')`"
+      >
+        <page-loading
+          :isLoading="isLoading"
+          :loadingText="loadingText"
+        ></page-loading>
+        <component :is="layout" class="content-container">
+          <router-view class="h-100" />
+        </component>
+        <div style="display: none">
+          <audio :src="currentSong" id="audio" loop autoplay type="audio/mpeg">
+            Audio not supported
+          </audio>
+        </div>
       </div>
-    </div>
-  </v-app>
+    </v-app>
+  </div>
 </template>
 
 <script>
@@ -51,11 +56,10 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: black;
-  /* background: url("/images/game-battle-bg.png"); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -70,6 +74,13 @@ a {
 .center-block {
   display: block !important;
   margin: 0 auto !important;
+}
+
+.v-application--wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
 }
 </style>
 
