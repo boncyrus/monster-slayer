@@ -68,6 +68,21 @@ export default {
 
 a {
   color: white !important;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
   text-decoration: none;
 }
 
@@ -101,4 +116,10 @@ a {
   display: flex;
   flex-direction: column;
 }
+
+.v-btn--active {
+  background-color: teal !important;
+  display: none;
+}
+
 </style>
