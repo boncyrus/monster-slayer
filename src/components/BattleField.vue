@@ -217,12 +217,23 @@ export default {
     addBattleLog: function (log) {
       this.battleLogs.push(log);
     },
-    beforeActionExecute: function (action) {
-      console.log(action);
+    beforeActionExecute: function () {
       return true;
     },
-    computeProcPercentage: function (stat, threshold) {
-      return (stat / threshold) * 100;
+    computeMissPercentage: function (character, threshold) {
+      const procPercentage = this.computeProcPercentage(
+        character,
+        threshold,
+        "agi"
+      );
+
+      return 100 - procPercentage;
+    },
+    computeProcPercentage: function (character, threshold, statName) {
+      const totalStats = this.computeTotalStats(character, statName);
+      const percent = (totalStats / threshold) * 100;
+
+      return percent;
     },
     computeDamage: function (stat, damage) {
       return stat * (Math.abs(damage) / 100);
@@ -241,20 +252,20 @@ export default {
         if (move.target === TargetTypes.self.code) {
           initialDamage = this.computeTotalStats(player, "int") * 0.75;
         } else {
-          isMissed = this.probability(
-            this.computeProcPercentage(
-              this.computeTotalStats(player, "agi"),
-              statThreshold
-            )
+          const missPercentage = this.computeMissPercentage(
+            enemy,
+            statThreshold
           );
 
+          isMissed = this.probability(missPercentage);
+
           if (isMissed === false) {
-            isCrit = this.probability(
-              this.computeProcPercentage(
-                this.computeTotalStats(player, "luk"),
-                lukThreshold
-              )
+            const critPercentage = this.computeProcPercentage(
+              player,
+              lukThreshold,
+              "luk"
             );
+            isCrit = this.probability(critPercentage);
 
             initialDamage = this.computeDamage(
               this.computeTotalStats(player, "off"),
@@ -276,20 +287,20 @@ export default {
           const statName =
             move.type === SkillTypes.magical.code ? "int" : "off";
 
-          isMissed = this.probability(
-            this.computeProcPercentage(
-              this.computeTotalStats(player, "agi"),
-              statThreshold
-            )
+          const missPercentage = this.computeMissPercentage(
+            enemy,
+            statThreshold
           );
 
+          isMissed = this.probability(missPercentage);
+
           if (isMissed === false) {
-            isCrit = this.probability(
-              this.computeProcPercentage(
-                this.computeTotalStats(player, "luk"),
-                lukThreshold
-              )
+            const critPercentage = this.computeProcPercentage(
+              player,
+              lukThreshold,
+              "luk"
             );
+            isCrit = this.probability(critPercentage);
 
             initialDamage = this.computeDamage(
               this.computeTotalStats(player, statName),
@@ -349,8 +360,7 @@ export default {
       this.addBattleLog(this.createSkillLog(this.player.name, damageInfo));
       this.performEnemyMove();
     },
-    beforeEnemyActionExecute: function (action) {
-      console.log(action);
+    beforeEnemyActionExecute: function () {
       return true;
     },
     onEnemyActionExecute: function (action) {
