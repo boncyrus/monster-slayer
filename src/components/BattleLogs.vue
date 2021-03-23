@@ -33,5 +33,6 @@ export default {
   background-color: teal;
   border-radius: 5px;
   text-align: center;
+  padding: 0 4px;
 }
 </style>

@@ -88,6 +88,7 @@ import { SkillTypes } from "../models/skillTypes";
 
 const critMultiplier = 1.5;
 const statThreshold = 500;
+const agiThreshold = 1000;
 const lukThreshold = 5;
 const enemyMoveDelay = 500;
 
@@ -172,6 +173,7 @@ export default {
       }
     },
     reset: async function () {
+      this.isAttacking = false;
       this.isLoading = true;
       this.showDialog = false;
       this.battleLogs = [];
@@ -217,17 +219,14 @@ export default {
     addBattleLog: function (log) {
       this.battleLogs.push(log);
     },
-    beforeActionExecute: function () {
-      return true;
-    },
-    computeMissPercentage: function (character, threshold) {
+    computeMissPercentage: function (character) {
       const procPercentage = this.computeProcPercentage(
         character,
-        threshold,
+        agiThreshold,
         "agi"
       );
 
-      return 100 - procPercentage;
+      return procPercentage;
     },
     computeProcPercentage: function (character, threshold, statName) {
       const totalStats = this.computeTotalStats(character, statName);
@@ -252,10 +251,7 @@ export default {
         if (move.target === TargetTypes.self.code) {
           initialDamage = this.computeTotalStats(player, "int") * 0.75;
         } else {
-          const missPercentage = this.computeMissPercentage(
-            enemy,
-            statThreshold
-          );
+          const missPercentage = this.computeMissPercentage(enemy);
 
           isMissed = this.probability(missPercentage);
 
@@ -287,10 +283,7 @@ export default {
           const statName =
             move.type === SkillTypes.magical.code ? "int" : "off";
 
-          const missPercentage = this.computeMissPercentage(
-            enemy,
-            statThreshold
-          );
+          const missPercentage = this.computeMissPercentage(enemy);
 
           isMissed = this.probability(missPercentage);
 
@@ -328,6 +321,14 @@ export default {
 
       return damageInfo;
     },
+    beforeActionExecute: function () {
+      if (this.isAttacking === true) {
+        return false;
+      }
+
+      this.isAttacking = true;
+      return true;
+    },
     onActionExecute: function (action) {
       this.battleLogs = [];
       const damageInfo = this.getDamageInfo(this.player, this.enemy, action);
@@ -342,9 +343,17 @@ export default {
       this.performEnemyMove();
     },
     beforeSkillExecute: function (skill) {
+      if (this.isAttacking === true) {
+        return false;
+      }
+
+      this.isAttacking = true;
+
       return skill.cost <= this.player.stats.mana;
     },
     onSkillExecute: function (skill) {
+      this.isAttacking = true;
+
       this.battleLogs = [];
       const damageInfo = this.getDamageInfo(this.player, this.enemy, skill);
 
@@ -451,11 +460,14 @@ export default {
             this.onEnemySkillExecute(skill);
           }
         }
+
+        this.isAttacking = false;
       }, enemyMoveDelay);
     },
   },
   data() {
     return {
+      isAttacking: false,
       showDialog: false,
       battleOutcome: new FinishBattleResponse(),
       dungeonInfo: new DungeonPreview(),
