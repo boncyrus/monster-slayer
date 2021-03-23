@@ -19,7 +19,7 @@
       <div class="col px-1" v-for="skill in skills" :key="skill.name">
         <button
           :disabled="isSkillDisabled(skill)"
-          class="btn btn-secondary w-100"
+          class="btn btn-secondary w-100 h-100"
           @click.prevent="handleSkill(skill)"
         >
           {{ skill.name }}

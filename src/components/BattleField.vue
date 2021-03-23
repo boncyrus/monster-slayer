@@ -97,11 +97,11 @@ export default {
     this.setBg();
     next();
   },
-  created: function () {
+  created: function() {
     this.reset();
   },
   watch: {
-    "player.stats.health": function (value) {
+    "player.stats.health": function(value) {
       this.ensureHealth(value, this.player, this.playerStats);
 
       this.playerStats.healthPercentage = this.computePoints(
@@ -109,7 +109,7 @@ export default {
         this.playerStats.maxHealth
       );
     },
-    "player.stats.mana": function (value) {
+    "player.stats.mana": function(value) {
       this.ensureMana(value, this.player, this.playerStats);
 
       this.playerStats.manaPercentage = this.computePoints(
@@ -117,7 +117,7 @@ export default {
         this.playerStats.maxMana
       );
     },
-    "enemy.stats.health": function (value) {
+    "enemy.stats.health": function(value) {
       this.ensureHealth(value, this.enemy, this.enemyStats);
 
       this.enemyStats.healthPercentage = this.computePoints(
@@ -125,7 +125,7 @@ export default {
         this.enemyStats.maxHealth
       );
     },
-    "enemy.stats.mana": function (value) {
+    "enemy.stats.mana": function(value) {
       this.ensureMana(value, this.enemy, this.enemyStats);
 
       this.enemyStats.manaPercentage = this.computePoints(
@@ -133,7 +133,7 @@ export default {
         this.enemyStats.maxMana
       );
     },
-    isBattleDone: async function (value) {
+    isBattleDone: async function(value) {
       if (value === true) {
         this.battleOutcome = await this.finishBattle(
           new FinishBattleRequest({
@@ -150,14 +150,14 @@ export default {
   methods: {
     ...mapActions("character", ["fetchCharacter", "finishBattle"]),
     ...mapMutations("app", ["setLoading", "setBg"]),
-    handlePlayAgain: function () {
+    handlePlayAgain: function() {
       this.reset();
     },
-    handleGoBack: function () {
+    handleGoBack: function() {
       this.showDialog = false;
       this.$router.replace(this.$route.meta.backTo);
     },
-    ensureHealth: function (value, character, stats) {
+    ensureHealth: function(value, character, stats) {
       if (value <= 0) {
         character.stats.health = 0;
         this.isBattleDone = true;
@@ -165,14 +165,14 @@ export default {
         character.stats.health = stats.maxHealth;
       }
     },
-    ensureMana: function (value, character, stats) {
+    ensureMana: function(value, character, stats) {
       if (value <= 0) {
         character.stats.mana = 0;
       } else if (value > stats.maxMana) {
         character.stats.mana = stats.maxMana;
       }
     },
-    reset: async function () {
+    reset: async function() {
       this.isAttacking = false;
       this.isLoading = true;
       this.showDialog = false;
@@ -213,13 +213,13 @@ export default {
 
       this.isLoading = false;
     },
-    computePoints: function (value, max) {
+    computePoints: function(value, max) {
       return (value / max) * 100;
     },
-    addBattleLog: function (log) {
+    addBattleLog: function(log) {
       this.battleLogs.push(log);
     },
-    computeMissPercentage: function (character) {
+    computeMissPercentage: function(character) {
       const procPercentage = this.computeProcPercentage(
         character,
         agiThreshold,
@@ -228,19 +228,19 @@ export default {
 
       return procPercentage;
     },
-    computeProcPercentage: function (character, threshold, statName) {
+    computeProcPercentage: function(character, threshold, statName) {
       const totalStats = this.computeTotalStats(character, statName);
       const percent = (totalStats / threshold) * 100;
 
       return percent;
     },
-    computeDamage: function (stat, damage) {
+    computeDamage: function(stat, damage) {
       return stat * (Math.abs(damage) / 100);
     },
-    computeDefense: function (stat) {
+    computeDefense: function(stat) {
       return (stat / statThreshold) * 100;
     },
-    getDamageInfo: function (player, enemy, move) {
+    getDamageInfo: function(player, enemy, move) {
       let initialDamage = 0;
       let reduction = 0;
       let damage = 0;
@@ -321,7 +321,7 @@ export default {
 
       return damageInfo;
     },
-    beforeActionExecute: function () {
+    beforeActionExecute: function() {
       if (this.isAttacking === true) {
         return false;
       }
@@ -329,7 +329,7 @@ export default {
       this.isAttacking = true;
       return true;
     },
-    onActionExecute: function (action) {
+    onActionExecute: function(action) {
       this.battleLogs = [];
       const damageInfo = this.getDamageInfo(this.player, this.enemy, action);
 
@@ -342,7 +342,7 @@ export default {
       this.addBattleLog(this.createActionLog(this.player.name, damageInfo));
       this.performEnemyMove();
     },
-    beforeSkillExecute: function (skill) {
+    beforeSkillExecute: function(skill) {
       if (this.isAttacking === true) {
         return false;
       }
@@ -351,7 +351,7 @@ export default {
 
       return skill.cost <= this.player.stats.mana;
     },
-    onSkillExecute: function (skill) {
+    onSkillExecute: function(skill) {
       this.isAttacking = true;
 
       this.battleLogs = [];
@@ -369,10 +369,14 @@ export default {
       this.addBattleLog(this.createSkillLog(this.player.name, damageInfo));
       this.performEnemyMove();
     },
-    beforeEnemyActionExecute: function () {
+    beforeEnemyActionExecute: function() {
+      if (this.enemy.health <= 0) {
+        return false;
+      }
+
       return true;
     },
-    onEnemyActionExecute: function (action) {
+    onEnemyActionExecute: function(action) {
       let damageInfo = this.getDamageInfo(this.enemy, this.player, action);
 
       if (action.target === TargetTypes.enemy.code) {
@@ -383,10 +387,14 @@ export default {
 
       this.addBattleLog(this.createActionLog(this.enemy.name, damageInfo));
     },
-    beforeEnemySkillExecute: function (skill) {
+    beforeEnemySkillExecute: function(skill) {
+      if (this.enemy.health <= 0) {
+        return false;
+      }
+
       return skill.cost <= this.enemy.stats.mana;
     },
-    onEnemySkillExecute: function (skill) {
+    onEnemySkillExecute: function(skill) {
       const damageInfo = this.getDamageInfo(this.enemy, this.player, skill);
       if (skill.target === TargetTypes.enemy.code) {
         this.player.stats.health -= damageInfo.damage;
@@ -399,7 +407,7 @@ export default {
       this.enemy.stats.mana -= Math.abs(skill.cost);
       this.addBattleLog(this.createSkillLog(this.enemy.name, damageInfo));
     },
-    createDamageInfoText: function (damageInfo) {
+    createDamageInfoText: function(damageInfo) {
       let additionalText = "";
       if (damageInfo.isMissed === true) {
         additionalText = " Missed!";
@@ -409,7 +417,7 @@ export default {
 
       return additionalText;
     },
-    createActionLog: function (name, action) {
+    createActionLog: function(name, action) {
       if (action.target === TargetTypes.enemy.code) {
         return new BattleLog(
           `${name} performed ${action.name}! Dealt ${
@@ -424,7 +432,7 @@ export default {
         }
       }
     },
-    createSkillLog: function (name, skill) {
+    createSkillLog: function(name, skill) {
       if (skill.target === TargetTypes.enemy.code) {
         return new BattleLog(
           `${name} used ${skill.name}! Dealt ${
@@ -437,7 +445,7 @@ export default {
         );
       }
     },
-    performEnemyMove: function () {
+    performEnemyMove: function() {
       setTimeout(() => {
         const move = this.randomize(0, 1);
 
