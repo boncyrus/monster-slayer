@@ -1,24 +1,9 @@
-# project2
+# Monster Slayer
 
-## Project setup
-```
-npm install
-```
+## Overview
+I made this project while I was enrolled in a Vue course in our company. As part of the final project, we were given the opportunity to showcase what we've learned by building the Monster Slayer game.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Technologies used
+- Vue
+- Vue Router
+- Vuetify
